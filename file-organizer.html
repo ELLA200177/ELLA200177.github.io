@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文件 AI 整理工具 · 作品集 — 黄佳</title>
+<meta name="description" content="文件 AI 整理工具：让 AI 读懂你的文件，自动改名、自动归档。桌面不再乱。独立完成需求定义、产品设计与开源发布。">
+<style>
+  :root {
+    --bg: #faf9f6;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --text: #1f1e1b;
+    --text-2: #5f5e59;
+    --text-3: #8a8983;
+    --border: #e5e3dc;
+    --border-2: #d6d4cc;
+    --accent: #185fa5;
+    --accent-2: #378add;
+    --teal: #0f6e56;
+    --amber: #854f0b;
+    --radius: 14px;
+    --font: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+  header { padding: 72px 0 40px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%); }
+  .kicker { display: inline-block; font-size: 12px; letter-spacing: .08em; color: var(--accent); background: #e6f1fb; padding: 4px 12px; border-radius: 20px; font-weight: 500; margin-bottom: 20px; }
+  h1 { font-size: 44px; line-height: 1.2; font-weight: 500; letter-spacing: -.02em; }
+  h1 .name { color: var(--accent); }
+  .tagline { font-size: 20px; color: var(--text-2); margin-top: 16px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .chip { font-size: 13px; color: var(--text-2); background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; }
+  .chip b { color: var(--text); font-weight: 500; }
+  .hero-actions { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; padding: 12px 22px; border-radius: 10px; border: 1px solid transparent; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
+  .btn:hover { text-decoration: none; transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { box-shadow: 0 6px 18px rgba(24,95,165,.25); }
+  .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border-2); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { padding: 56px 0; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-label { font-size: 12px; letter-spacing: .08em; color: var(--text-3); text-transform: uppercase; margin-bottom: 12px; font-weight: 500; }
+  h2 { font-size: 28px; font-weight: 500; letter-spacing: -.01em; margin-bottom: 12px; }
+  .lead { font-size: 16px; color: var(--text-2); max-width: 640px; }
+
+  /* Hero mock */
+  .hero-shot { margin-top: 36px; border: 1px solid var(--border-2); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .shot-head { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--surface-2); border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #e24b4a; } .dot.y { background: #ef9f27; } .dot.g { background: #639922; }
+  .shot-body { padding: 28px; background: linear-gradient(180deg, #faf9f6, #f3f1ec); }
+  .panel { background: #fff; border: 1px solid var(--border-2); border-radius: 12px; box-shadow: 0 8px 24px rgba(31,30,27,.06); overflow: hidden; }
+  .panel-head { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-2); display: flex; justify-content: space-between; align-items: center; }
+  .panel-head .tag { font-size: 11px; color: var(--accent); background: #e6f1fb; padding: 2px 10px; border-radius: 10px; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--border); }
+  .row:last-child { border-bottom: none; }
+  .row .fname { flex: 1; font-size: 14px; }
+  .row .fname .old { color: var(--text-3); text-decoration: line-through; font-size: 12px; display: block; }
+  .row .arrow { color: var(--accent); font-weight: 500; }
+  .row .to { color: var(--teal); font-size: 12px; text-align: right; }
+  .row .to .dir { color: var(--text-3); display: block; font-size: 11px; }
+  .hint { font-size: 11px; color: var(--text-3); text-align: center; padding: 10px; background: var(--surface-2); }
+
+  /* Pain table */
+  .pain-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+  .pain-table th, .pain-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  .pain-table th { font-weight: 500; color: var(--text-2); background: var(--surface-2); font-size: 13px; }
+  .pain-table td:first-child { color: var(--text-2); font-weight: 500; }
+
+  /* Metric cards */
+  .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 24px; }
+  .metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .metric .m-num { font-size: 22px; font-weight: 500; color: var(--accent); }
+  .metric .m-lbl { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+  .metric .m-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  /* Privacy table */
+  .privacy-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+  .privacy-table th, .privacy-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  .privacy-table th { font-weight: 500; color: var(--text-2); background: var(--surface-2); font-size: 13px; }
+  .privacy-table .local { color: var(--teal); font-weight: 500; }
+  .privacy-table .cloud { color: var(--amber); }
+
+  .callout { background: #e6f1fb; border: 1px solid #b5d4f4; border-radius: var(--radius); padding: 24px; margin-top: 20px; }
+  .callout .callout-title { font-weight: 500; font-size: 15px; margin-bottom: 8px; color: var(--accent); }
+  .callout p { font-size: 14px; color: var(--text-2); }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .stat .num { font-size: 34px; font-weight: 500; color: var(--accent); line-height: 1.2; }
+  .stat .lbl { font-size: 13px; color: var(--text-2); margin-top: 6px; }
+
+  .role-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  .role-box { border-radius: var(--radius); padding: 24px; }
+  .role-box.mine { background: #e6f1fb; border: 1px solid #b5d4f4; }
+  .role-box.ai { background: #f3f1ec; border: 1px solid var(--border-2); }
+  .role-box h3 { font-size: 15px; font-weight: 500; margin-bottom: 10px; }
+  .role-box ul { list-style: none; }
+  .role-box li { font-size: 14px; color: var(--text-2); padding: 5px 0 5px 18px; position: relative; }
+  .role-box li::before { content: ""; position: absolute; left: 0; top: 13px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .role-box.ai li::before { background: var(--text-3); }
+
+  .honest-note { margin-top: 16px; font-size: 13px; color: var(--text-3); padding: 14px 18px; background: #fbf7ee; border: 1px solid #f0e4c8; border-radius: 10px; }
+
+  footer { padding: 48px 0 72px; text-align: center; border-top: 1px solid var(--border); color: var(--text-3); font-size: 13px; }
+  footer .foot-links { margin-top: 12px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 32px; }
+    .grid-2, .role-split { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .metrics { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="kicker">个人作品 · 独立开源项目</span>
+    <h1>文件 <span class="name">AI 整理</span>工具</h1>
+    <p class="tagline">让 AI 读懂你的文件，自动改名、自动归档。<br>桌面不再乱。</p>
+    <div class="meta">
+      <span class="chip"><b>作者</b> 黄佳</span>
+      <span class="chip"><b>技术栈</b> Python · pywebview · AI API</span>
+      <span class="chip"><b>平台</b> Windows</span>
+      <span class="chip"><b>协议</b> MIT 开源</span>
+      <span class="chip"><b>版本</b> v0.6（原型）</span>
+    </div>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="https://github.com/ELLA200177/file-ai-organizer" target="_blank" rel="noopener">查看 GitHub 仓库</a>
+      <a class="btn btn-ghost" href="https://github.com/ELLA200177/file-ai-organizer#readme" target="_blank" rel="noopener">阅读 PRD 文档</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label">01 · 一眼看懂</div>
+    <h2>扫描 → AI 分析建议 → 确认归档</h2>
+    <p class="lead">三步把散落的文件归位。AI 读懂内容，给出新名字和归属文件夹，你确认后一键完成。</p>
+
+    <div class="hero-shot">
+      <div class="shot-head">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span>文件 AI 整理工具 · 分析建议</span>
+      </div>
+      <div class="shot-body">
+        <div class="panel">
+          <div class="panel-head">
+            <span>建议列表</span>
+            <span class="tag">AI 已分析 3 个文件</span>
+          </div>
+          <div class="row">
+            <span class="fname">
+              报价单.pdf
+              <span class="old">202310-报价单-最终版(2).pdf</span>
+            </span>
+            <span class="arrow">→</span>
+            <span class="to">财务<span class="dir">→ 财务/报价单/</span></span>
+          </div>
+          <div class="row">
+            <span class="fname">
+              会议纪要-产品评审.docx
+              <span class="old">docx(3).docx</span>
+            </span>
+            <span class="arrow">→</span>
+            <span class="to">会议<span class="dir">→ 会议纪要/</span></span>
+          </div>
+          <div class="row">
+            <span class="fname">
+              实验数据-玉米蛋白.xlsx
+              <span class="old">新建 Microsoft Excel 工作表.xlsx</span>
+            </span>
+            <span class="arrow">→</span>
+            <span class="to">科研<span class="dir">→ 科研/实验数据/</span></span>
+          </div>
+          <div class="hint">执行前二次确认 · 出错可一键撤销 · 保留原名仅移动</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-3);margin-top:12px;">↑ 示意图（按真实交互逻辑还原）。实际截图见 GitHub README。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label">02 · 痛点与目标</div>
+    <h2>从「手动整理启动不了」出发</h2>
+    <p class="lead">目标用户不是「文件特别多的人」，而是「文件不算多、但按项目分完之后进去认不出」的人。</p>
+    <table class="pain-table">
+      <thead>
+        <tr><th>痛点</th><th>描述</th><th>对应功能</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>文件认不出</td><td>分好文件夹，进去还要盯着文件名一个个看</td><td>AI 重命名 + 文件预览</td></tr>
+        <tr><td>漂着的文件堆桌面</td><td>不属于任何项目的文件越堆越多</td><td>自动归档 + 自动新建分类</td></tr>
+        <tr><td>找文件靠翻</td><td>靠回忆一个个文件夹翻，效率低</td><td>自然语言搜索</td></tr>
+        <tr><td>手动整理启动不了</td><td>知道该整理，但太花时间从没开始过</td><td>一键扫描 + 分析 + 归档</td></tr>
+      </tbody>
+    </table>
+
+    <div class="metrics">
+      <div class="metric"><div class="m-num">≥ 80%</div><div class="m-lbl">AI 建议准确率</div><div class="m-sub">用户不用大改就能归档</div></div>
+      <div class="metric"><div class="m-num">≤ 3 秒</div><div class="m-lbl">单文件分析时间</div><div class="m-sub">后台线程，不卡界面</div></div>
+      <div class="metric"><div class="m-num">≥ 90%</div><div class="m-lbl">桌面散落文件下降</div><div class="m-sub">使用后的核心目标</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-3);margin-top:12px;">↑ 这些是 PRD 里写明的「成功衡量标准」——用可量化指标定义产品是否做对了，这是产品岗最看重的动作。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label">03 · 产品设计</div>
+    <h2>三个关键设计决策</h2>
+    <div class="callout">
+      <div class="callout-title">决策一：三层分类体系，而不是让 AI 乱归</div>
+      <p>现有文件夹 + 用户自定义分类 + AI 积累的分类，三层合并去重后作为候选。AI 新建的分类会按文件夹持久化，下次自动复用——既尊重用户已有的习惯，又让 AI 能「越用越懂」。</p>
+    </div>
+    <div class="callout">
+      <div class="callout-title">决策二：归档前确认 + 一键撤销，把「信任」做进产品</div>
+      <p>移动文件是不可逆操作。所以设计成「预览解耦、归档显式确认、出错一键还原」——用户敢用，产品才成立。</p>
+    </div>
+    <div class="callout">
+      <div class="callout-title">决策三：本地模型（隐私模式）——给敏感文件的第二条路</div>
+      <p>同一套 OpenAI 兼容接口，既支持云端服务商（DeepSeek/Kimi/智谱…），也支持本地 Ollama。整理涉密文件时，AI 完全在本机运行，内容不上传。这是「把隐私作为产品功能」而不只是合规项。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label">04 · 隐私与安全</div>
+    <h2>把「安全」做成可讲的设计</h2>
+    <p class="lead">一个会移动你文件的工具，安全和隐私不是加分项，是底线。这里有两张表可以说清。</p>
+    <table class="privacy-table">
+      <thead><tr><th>模式</th><th>文件内容去向</th></tr></thead>
+      <tbody>
+        <tr><td class="local">本地模型（Ollama）</td><td class="local">不离开你的电脑</td></tr>
+        <tr><td class="cloud">云端服务商（DeepSeek/Kimi…）</td><td class="cloud">发送给该服务商服务器</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <div class="callout-title">关键安全设计</div>
+      <p>API Key 只存本机 <span style="font-family:var(--mono);font-size:13px;">~/.fileai/config.json</span>，不进仓库；文件名与文件夹名写盘前统一清洗（非法字符、长度、Windows 保留名、路径穿越防护）；老配置自动迁移，读失败不报错。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label">05 · 交付成果</div>
+    <h2>落地了什么</h2>
+    <div class="stats">
+      <div class="stat"><div class="num">8+</div><div class="lbl">AI 服务商</div></div>
+      <div class="stat"><div class="num">9</div><div class="lbl">文件格式支持</div></div>
+      <div class="stat"><div class="num">3</div><div class="lbl">层分类体系</div></div>
+      <div class="stat"><div class="num">v0.6</div><div class="lbl">原型版本</div></div>
+    </div>
+    <p style="font-size:14px;color:var(--text-2);margin-top:20px;">支持 PDF / Word / PPT / Excel / txt / csv / md / json / 代码；AI 重命名、自动归档、自然语言搜索、文件预览、一键撤销、多服务商、本地隐私模式。Roadmap 已规划：分析并发、文件夹监控、打包 exe。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label">06 · 我的角色</div>
+    <h2>贡献边界，讲清楚才经得起追问</h2>
+    <div class="role-split">
+      <div class="role-box mine">
+        <h3>我负责的</h3>
+        <ul>
+          <li>需求定义：从「手动整理启动不了」的真实痛点出发</li>
+          <li>产品设计：三层分类、确认+撤销、隐私模式三大决策</li>
+          <li>成功衡量：定下准确率/耗时/下降幅度三项可量化指标</li>
+          <li>验收测试：定义验收标准，先写可复现测试再改代码</li>
+          <li>开源发布：许可证、README、PRD、Release</li>
+        </ul>
+      </div>
+      <div class="role-box ai">
+        <h3>AI 编码助手做的</h3>
+        <ul>
+          <li>代码实现：Python 后端、pywebview 前端、AI 请求层</li>
+          <li>技术细节：文件解析、后台线程、路径清洗与防护</li>
+        </ul>
+      </div>
+    </div>
+    <div class="honest-note">
+      诚实说明：本项目实现方式为「AI 编码助手」，本人负责需求、设计、验收与发布。被问「代码谁写的」时，标准回答——「代码由 AI 辅助实现，我负责把它定义成对的产品、并用可量化的成功标准来验证。」
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label">07 · 试用与联系</div>
+    <h2>想跑起来，或聊聊这个项目</h2>
+    <p class="lead">Windows + Python 3.10+，装依赖后填自己的 API Key（或装 Ollama 走本地隐私模式）即可运行。按量计费，整理单个文件消耗很少 token。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="https://github.com/ELLA200177/file-ai-organizer" target="_blank" rel="noopener">GitHub 仓库（含安装说明）</a>
+      <a class="btn btn-ghost" href="https://github.com/ELLA200177/file-ai-organizer/blob/main/PRD-文件AI整理工具.md" target="_blank" rel="noopener">完整 PRD 文档</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>文件 AI 整理工具 · MIT 开源 · 独立个人项目</div>
+    <div class="foot-links">
+      <span>黄佳 · 华中农业大学</span>
+      <a href="mailto:huangjia0177@163.com">huangjia0177@163.com</a>
+      <a href="https://github.com/ELLA200177" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

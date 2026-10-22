@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>从 JD 到一页简历 · AI 辅助简历定制流程</title>
+<style>
+  :root{
+    --ink:#151a2d; --ink-2:#3f4763; --muted:#7a8299;
+    --bg:#f5f6fa; --card:#ffffff; --line:#e6e8f0;
+    --brand:#4f46e5; --brand-soft:#eef0ff; --teal:#0d9488; --teal-soft:#e6f5f3;
+    --amber:#d97706; --amber-soft:#fdf3e3; --rose:#e11d48; --rose-soft:#fdeef2;
+    --shadow:0 10px 30px rgba(21,26,45,.08);
+    --radius:18px;
+  }
+  @page{size:A4;margin:12mm}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.7; -webkit-font-smoothing:antialiased;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+
+  /* ---------- nav ---------- */
+  .nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.4) blur(12px);
+    background:rgba(245,246,250,.86);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;gap:22px;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+  .logo .dot{width:10px;height:10px;border-radius:3px;background:linear-gradient(135deg,var(--brand),var(--teal))}
+  .nav-links{display:flex;gap:18px;margin-left:auto;font-size:14px;color:var(--ink-2)}
+  .nav-links a{padding:6px 2px;border-bottom:2px solid transparent}
+  .nav-links a:hover{color:var(--brand);border-color:var(--brand)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:76px 0 44px;position:relative;overflow:hidden}
+  .hero:before{content:"";position:absolute;right:-140px;top:-120px;width:460px;height:460px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,rgba(79,70,229,.20),rgba(13,148,136,.10) 55%,transparent 70%)}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--brand);
+    background:var(--brand-soft);padding:7px 14px;border-radius:999px}
+  h1{font-size:52px;line-height:1.18;letter-spacing:-.5px;margin:20px 0 16px;font-weight:900}
+  h1 .grad{background:linear-gradient(120deg,var(--brand),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:18px;color:var(--ink-2);max-width:760px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .chip{font-size:13.5px;color:var(--ink-2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px}
+  .chip b{color:var(--brand)}
+  .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;padding:13px 22px;border-radius:12px;border:1px solid transparent;cursor:pointer}
+  .btn-main{background:var(--ink);color:#fff}
+  .btn-ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+  .btn:hover{transform:translateY(-1px)}
+
+  /* ---------- sections ---------- */
+  .section{padding:54px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px;flex-wrap:wrap}
+  .sec-kicker{font-size:13px;font-weight:800;letter-spacing:2px;color:var(--brand);text-transform:uppercase}
+  h2{font-size:30px;letter-spacing:-.3px;margin-top:6px}
+  .sec-desc{color:var(--muted);font-size:14.5px;max-width:560px}
+
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .card h3{font-size:16.5px;margin-bottom:8px}
+  .card p{color:var(--ink-2);font-size:14px}
+
+  /* ---------- pipeline strip ---------- */
+  .pipeline{display:flex;align-items:stretch;gap:10px;overflow-x:auto;padding:6px 2px 14px}
+  .pnode{flex:0 0 auto;min-width:142px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative}
+  .pnode .n{font-size:12px;font-weight:800;color:var(--brand)}
+  .pnode .t{font-weight:700;font-size:14.5px;margin-top:4px}
+  .pnode .s{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .arrow{align-self:center;color:#c3c8d8;font-weight:800}
+
+  /* ---------- steps ---------- */
+  .steps-layout{display:grid;grid-template-columns:400px 1fr;gap:22px;align-items:start}
+  .steplist{display:flex;flex-direction:column;gap:10px}
+  .step{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px 16px;cursor:pointer;transition:.18s;text-align:left}
+  .step:hover{border-color:#cfd4e8;transform:translateY(-1px)}
+  .step.active{border-color:var(--brand);box-shadow:0 8px 24px rgba(79,70,229,.14)}
+  .step .num{flex:0 0 38px;height:38px;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:14px;
+    background:var(--brand-soft);color:var(--brand)}
+  .step.active .num{background:var(--brand);color:#fff}
+  .step .tt{font-weight:800;font-size:15px}
+  .step .ss{font-size:12.8px;color:var(--muted);margin-top:2px}
+  .detail{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);position:sticky;top:84px}
+  .detail .dnum{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--brand)}
+  .detail h3{font-size:22px;margin:8px 0 4px}
+  .detail .dsum{color:var(--ink-2);font-size:14.5px}
+  .blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+  .block{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .block .bt{font-size:12.5px;font-weight:800;letter-spacing:1px;color:var(--muted);margin-bottom:6px}
+  .block ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .block li{font-size:13.5px;color:var(--ink-2);padding-left:14px;position:relative}
+  .block li:before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--teal)}
+  .kw{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .kw span{font-size:12.5px;background:var(--teal-soft);color:#0b6f66;border-radius:999px;padding:6px 12px;font-weight:700}
+
+  /* ---------- rules ---------- */
+  .rule{position:relative;overflow:hidden}
+  .rule .tag{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:5px 12px}
+  .rule h3{margin-top:14px;font-size:18px}
+  .rule .why{margin-top:10px;font-size:13.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+
+  /* ---------- case ---------- */
+  .case-top{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
+  .pane{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .pane h3{font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .badge{font-size:11.5px;font-weight:800;border-radius:6px;padding:3px 8px}
+  .b-jd{background:var(--brand-soft);color:var(--brand)}
+  .b-ok{background:var(--teal-soft);color:#0b6f66}
+  .b-mid{background:var(--amber-soft);color:#9a5b06}
+  .b-gap{background:var(--rose-soft);color:#a8123a}
+  .jdlist{display:flex;flex-direction:column;gap:9px}
+  .jdlist .row{display:flex;gap:10px;font-size:14px;color:var(--ink-2);background:#fafbff;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .jdlist .row b{color:var(--ink)}
+  .match{display:flex;flex-direction:column;gap:12px}
+  .mgroup{border:1px solid var(--line);border-radius:13px;padding:13px 14px}
+  .mgroup .mh{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;margin-bottom:8px}
+  .mtags{display:flex;flex-wrap:wrap;gap:7px}
+  .mtags span{font-size:12.5px;background:#f4f5fa;border:1px solid var(--line);border-radius:999px;padding:5px 11px;color:var(--ink-2)}
+  .rewrite{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .rw{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .rw .rh{font-size:13px;font-weight:800;letter-spacing:1px;margin-bottom:12px}
+  .rw.before .rh{color:var(--muted)}
+  .rw.after .rh{color:var(--teal)}
+  .rw .quote{font-size:14px;color:var(--ink-2);background:#f8f9fd;border-left:3px solid #d7dbea;border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:12px}
+  .rw.after .quote{background:var(--teal-soft);border-left-color:var(--teal)}
+  .rw .quote b{color:var(--ink)}
+
+  /* ---------- QA ---------- */
+  .qa{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+  .a4{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+  .a4 .sheet{position:relative;aspect-ratio:210/297;border:1px solid #dfe3ef;border-radius:8px;padding:16px;background:#fff}
+  .a4 .bar{height:9px;border-radius:5px;background:#eef0f7;margin-bottom:9px}
+  .a4 .bar.dark{background:#d9ddeb}
+  .a4 .bar.short{width:62%}
+  .a4 .safe{position:absolute;left:0;right:0;bottom:0;height:12%;background:repeating-linear-gradient(45deg,rgba(13,148,136,.14),rgba(13,148,136,.14) 6px,transparent 6px,transparent 12px);
+    border-top:1.5px dashed var(--teal);display:flex;align-items:center;justify-content:center;font-size:11px;color:#0b6f66;font-weight:800}
+  .a4 .cap{font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center}
+  .checks{display:flex;flex-direction:column;gap:10px}
+  .check{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .check .ic{flex:0 0 28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal);font-weight:900}
+  .check b{font-size:14.5px}
+  .check p{font-size:13.5px;color:var(--muted)}
+
+  /* ---------- outputs ---------- */
+  .out{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .out .o{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+  .out .o .of{font-weight:800;font-size:14px;color:var(--brand)}
+  .out .o p{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .mailbox{margin-top:16px;background:#10131f;color:#e9ecf7;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .mailbox .mt{font-size:12.5px;letter-spacing:1px;color:#8f97b5;font-weight:800;margin-bottom:10px}
+  .mailbox .ms{font-size:13.5px;color:#b9c0d8;margin-bottom:8px}
+  .mailbox .mb{font-size:14px;line-height:1.8;color:#e9ecf7}
+  .mailbox .mb i{color:#9fe8dc;font-style:normal}
+
+  footer{padding:44px 0 60px;border-top:1px solid var(--line);margin-top:20px}
+  footer .ft{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:13.5px}
+  footer .fname{font-weight:800;color:var(--ink);font-size:15px}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:1020px){
+    .steps-layout{grid-template-columns:1fr}
+    .detail{position:static}
+    .case-top{grid-template-columns:1fr}
+    .qa{grid-template-columns:1fr}
+    .g4,.g3{grid-template-columns:1fr 1fr}
+    .out{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:660px){
+    h1{font-size:36px}
+    .blocks{grid-template-columns:1fr}
+    .rewrite{grid-template-columns:1fr}
+    .g4,.g3{grid-template-columns:1fr}
+    .nav-links{display:none}
+  }
+  @media print{
+    .nav,.cta{display:none}
+    body{background:#fff}
+    .card,.pane,.rw,.check,.detail,.out .o,.a4{box-shadow:none}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span> 从 JD 到一页简历</div>
+    <div class="nav-links">
+      <a href="#overview">概览</a>
+      <a href="#steps">七步流程</a>
+      <a href="#rules">三条铁律</a>
+      <a href="#case">真实案例</a>
+      <a href="#qa">质量校验</a>
+      <a href="#output">交付物</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">求职工作台 · 方法论文档</span>
+    <h1>从 JD 到一页简历<br><span class="grad">一套可复用的 AI 辅助定制流程</span></h1>
+    <p class="lead">拆解岗位要求 → 匹配真实经历 → 翻译成岗位语言 → 套版生成 → 渲染校验 → 交付投递。不编造、不堆关键词，用真实经历回答一个核心问题：<b>「我为什么对这个岗位有用」</b>。</p>
+    <div class="chips">
+      <span class="chip"><b>7</b> 步流程</span>
+      <span class="chip"><b>3</b> 条铁律</span>
+      <span class="chip"><b>4</b> 种交付格式</span>
+      <span class="chip"><b>1</b> 页 A4 硬约束</span>
+    </div>
+    <div class="cta">
+      <a class="btn btn-main" href="#steps">查看完整流程</a>
+      <a class="btn btn-ghost" href="#case">看真实改写案例</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section reveal" id="overview">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="sec-kicker">Overview</div>
+          <h2>流程总览</h2>
+        </div>
+        <p class="sec-desc">每一步都有明确的输入与输出，确保最终产出的简历既能过机器筛选，也能让用人经理一眼看到匹配点。</p>
+      </div>
+      <div class="pipeline">
+        <div class="pnode"><div class="n">STEP 01</div><div class="t">拆解 JD</div><div class="s">门槛 / 关键词 / 读者</div></div>
+        <div class="arrow">→</div>
+        <div class="pnode"><div class="n">STEP 02</div><div class="t">匹配经历</div><div class="s">已覆盖 / 可挖 / 缺失</div></div>
+        <div class="arrow">→</div>
+        <div class="pnode"><div class="n">STEP 03</div><div class="t">选配排序</div><div class="s">相关度 × 事实强度</div></div>
+        <div class="arrow">→</div>
+        <div class="pnode"><div class="n">STEP 04</div><div class="t">价值翻译</div><div class="s">动作 + 结果 + 岗位语言</div></div>
+        <div class="arrow">→</div>
+        <div class="pnode"><div class="n">STEP 05</div><div class="t">套版生成</div><div class="s">一源多格式</div></div>
+        <div class="arrow">→</div>
+        <div class="pnode"><div class="n">STEP 06</div><div class="t">渲染校验</div><div class="s">1 页 / 密度 / 一致性</div></div>
+        <div class="arrow">→</div>
+        <div class="pnode"><div class="n">STEP 07</div><div class="t">交付沉淀</div><div class="s">投递包 + 经历库</div></div>
+      </div>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="card"><h3>对机器：过筛</h3><p>JD 高频关键词自然出现、结构清晰、单栏排版、无图片化文字，保证 ATS 可解析。</p></div>
+        <div class="card"><h3>对人：可信</h3><p>每条经历都有真实出处与量化结果；缺口如实标注，不编造。</p></div>
+        <div class="card"><h3>对己：可复用</h3><p>一次建立流程，换岗位只需替换 JD 与选配逻辑，每次投递都能快速产出。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="steps">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-kicker">Workflow</div><h2>七步流程（点击查看细节）</h2></div>
+        <p class="sec-desc">左侧选择步骤，右侧显示这一步的输入、动作与输出。</p>
+      </div>
+      <div class="steps-layout">
+        <div class="steplist" id="steplist"></div>
+        <div class="detail" id="detail"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="rules">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-kicker">Principles</div><h2>三条铁律</h2></div>
+        <p class="sec-desc">任何取舍冲突时，优先级为：保真 &gt; 一页 &gt; 关键词。</p>
+      </div>
+      <div class="grid g3">
+        <div class="card rule">
+          <span class="tag" style="background:#0d9488">铁律一</span>
+          <h3>保真：每个字都经得起追问</h3>
+          <p>数字必须能在经历库里找到出处；没做过的不写。职责可以重新组织语言，但不能升格。</p>
+          <div class="why">判断标准：被面试官追问三层还不露馅。</div>
+        </div>
+        <div class="card rule">
+          <span class="tag" style="background:#4f46e5">铁律二</span>
+          <h3>一页 A4：硬约束</h3>
+          <p>PDF、Word、图片必须都是 1 页；超页优先删弱相关内容，而不是缩字号硬塞。</p>
+          <div class="why">底部留白保持在 10–20mm，页面不挤也不空。</div>
+        </div>
+        <div class="card rule">
+          <span class="tag" style="background:#d97706">铁律三</span>
+          <h3>价值翻译：写「有什么用」</h3>
+          <p>不是工作日志，而是证明「我为什么对你有用」：动作 + 落地方式 + 量化结果。</p>
+          <div class="why">用 JD 的语言表达，但不堆砌关键词。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="case">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-kicker">Case Study</div><h2>真实案例：电商产品（预习班项目）</h2></div>
+        <p class="sec-desc">用真实 JD 与真实经历演示「拆解 → 匹配 → 改写」的完整过程。</p>
+      </div>
+      <div class="case-top">
+        <div class="pane">
+          <h3><span class="badge b-jd">JD 拆解</span> 岗位要证明什么</h3>
+          <div class="jdlist">
+            <div class="row"><b>职责一</b> 结合销售数据与用户反馈，洞察电商场景的产品机会</div>
+            <div class="row"><b>职责二</b> 主导产品前置研究：竞品分析、配方测试、原料与工艺可行性验证</div>
+            <div class="row"><b>职责三</b> 作为电商与产品 / 研发的桥梁，协调多方推动产品上市</div>
+            <div class="row"><b>要求</b> 生物 / 化学 / 食品等专业优先；CET-6；拥抱 AI 工具</div>
+            <div class="row"><b>门票</b> 全勤实习 ≥ 3 个月（需提前确认档期）</div>
+          </div>
+        </div>
+        <div class="pane">
+          <h3><span class="badge b-ok">匹配结论</span> 真实经历对照</h3>
+          <div class="match">
+            <div class="mgroup">
+              <div class="mh"><span class="badge b-ok">已覆盖</span> 直接可写</div>
+              <div class="mtags"><span>用户反馈 + 数据定位产品机会</span><span>产品 0→1 设计与定价</span><span>方案筛选与验证</span><span>跨部门资源协调</span><span>AI 工具提效</span></div>
+            </div>
+            <div class="mgroup">
+              <div class="mh"><span class="badge b-mid">可挖</span> 换语言表达</div>
+              <div class="mtags"><span>科研实验 → 动手验证</span><span>文献调研 → 竞品 / 行业信息</span><span>三级验证体系 → 可行性测试流程</span></div>
+            </div>
+            <div class="mgroup">
+              <div class="mh"><span class="badge b-gap">真缺失</span> 如实不写</div>
+              <div class="mtags"><span>电商 / 快消实习</span><span>正式竞品分析报告</span><span>产品预研包</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rewrite">
+        <div class="rw before">
+          <div class="rh">改写前 · 工作日志式</div>
+          <div class="quote">运营小红书备考账号，发布考研内容，积累粉丝。</div>
+          <div class="quote">完成分子标记筛选，最后得到 6 个标记。</div>
+        </div>
+        <div class="rw after">
+          <div class="rh">改写后 · 价值 + 结果（最终进简历）</div>
+          <div class="quote"><b>需求洞察与产品机会：</b>围绕「院校信息差、资料分散」的用户痛点，结合用户反馈与内容、转化数据，定位产品机会并设计备考资料产品。</div>
+          <div class="quote"><b>方案筛选与验证：</b>建立三级验证体系与「测试—反馈—优化」闭环，1 个月内完成 20 项方案的设计、筛选与验证，交付 6 个有效成果，按期交付率 100%。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="qa">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-kicker">Quality Check</div><h2>渲染与质量校验</h2></div>
+        <p class="sec-desc">简历不是写完就好——必须真实渲染出来，确认页数、密度与格式一致性。</p>
+      </div>
+      <div class="qa">
+        <div class="a4">
+          <div class="sheet">
+            <div class="bar dark" style="width:46%;height:14px"></div>
+            <div class="bar short" style="margin-top:14px"></div>
+            <div class="bar"></div><div class="bar"></div>
+            <div class="bar dark" style="margin-top:16px;width:36%"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar short"></div>
+            <div class="bar dark" style="margin-top:16px;width:30%"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar dark" style="margin-top:16px;width:40%"></div>
+            <div class="bar"></div><div class="bar short"></div>
+            <div class="safe">结束区安全落点 10–20mm</div>
+          </div>
+          <div class="cap">A4 一页版面与底部留白示意</div>
+        </div>
+        <div class="checks">
+          <div class="check"><div class="ic">✓</div><div><b>页数：恰好 1 页 A4</b><p>PDF 与 Word 分别渲染确认，任一格式超页就删减重导出。</p></div></div>
+          <div class="check"><div class="ic">✓</div><div><b>密度：底部留白 10–20mm</b><p>太满显得拥挤，太空说明内容不足；用密度检测而不是肉眼估计。</p></div></div>
+          <div class="check"><div class="ic">✓</div><div><b>一致性：同一份内容源</b><p>PDF / Word / PNG 来自同一份 HTML，不为某一种格式单独加内容。</p></div></div>
+          <div class="check"><div class="ic">✓</div><div><b>可读性：中文无乱码、无错行</b><p>检查换行、日期、项目符号与对齐，确保打印与手机端都清晰。</p></div></div>
+          <div class="check"><div class="ic">✓</div><div><b>ATS 友好：单栏 + 文本可解析</b><p>英文版去掉照片、使用标准栏目标题与国际通用数字写法。</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="output">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-kicker">Deliverables</div><h2>最终交付物</h2></div>
+        <p class="sec-desc">一个岗位一个文件夹，打开就能投递。</p>
+      </div>
+      <div class="out">
+        <div class="o"><div class="of">PDF</div><p>正式投递附件<br>版式最稳</p></div>
+        <div class="o"><div class="of">Word</div><p>可编辑版本<br>对方要求时提供</p></div>
+        <div class="o"><div class="of">PNG</div><p>手机 / 微信<br>快速发送</p></div>
+        <div class="o"><div class="of">HTML</div><p>网页版预览<br>证件照内嵌</p></div>
+        <div class="o"><div class="of">邮件 / 私信</div><p>主题 + 正文<br>＋平台短消息</p></div>
+      </div>
+      <div class="mailbox">
+        <div class="mt">投递邮件示意</div>
+        <div class="ms">Subject：应聘【岗位名称】-华中农业大学-黄佳</div>
+        <div class="mb">尊敬的 HR 您好：<br>我是黄佳，华中农业大学 2027 届硕士，应聘<i>【岗位名称】</i>。我有三段相关积累：① ……；② ……；③ ……。我 2027 年 7 月可到岗，简历见附件，期待与您进一步沟通，谢谢！</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap ft">
+    <div>
+      <div class="fname">黄佳 · 求职工作台</div>
+      <div>华中农业大学 · 2027 届硕士 ｜ 17775708130 ｜ huangjia0177@163.com</div>
+    </div>
+    <div style="max-width:420px">本页为个人方法论文档：流程与案例来自本人真实投递材料，关键数据已脱敏；网页由本人独立设计与实现。</div>
+  </div>
+</footer>
+
+<script>
+const STEPS = [
+  {n:"01",t:"拆解 JD",s:"把岗位要求翻译成能力清单",
+   sum:"先用招聘方的语言理解岗位：这个岗位到底要证明什么能力。",
+   input:["JD 原文（职责 + 任职要求）","岗位名称与工作地点","公司 / 行业信息"],
+   action:["提取硬性门槛：学历、专业、毕业时间、英语、实习时长","提取高频关键词与动作动词","判断岗位 × 行业 × 公司性质 × 最终读者","标记加分项与文件命名要求"],
+   output:["一页「岗位能力清单」","关键词 Top 10","硬性门槛比对表"],
+   kw:["硬性门槛","关键词","目标读者","加分项"]},
+  {n:"02",t:"匹配经历",s:"真实经历对号入座，不编造",
+   sum:"把每条真实经历分成三类：能直接证明的、可以换个说法证明的、确实缺的。",
+   input:["个人经历库（项目 / 实习 / 校园 / 实践）","JD 能力清单"],
+   action:["逐条比对：已覆盖 / 可挖 / 真缺失","为「可挖」寻找同义的真实动作与结果","把「真缺失」单独列出，绝不写进简历"],
+   output:["经历匹配矩阵","可迁移能力映射","诚实缺口清单"],
+   kw:["已覆盖","可挖","真缺失","可迁移"]},
+  {n:"03",t:"选配与排序",s:"决定谁放前面、谁压成一行",
+   sum:"按「与 JD 相关度 × 事实强度 × 可量化程度」排序，并把版面当成预算来分配。",
+   input:["经历匹配矩阵","一页 A4 的篇幅预算"],
+   action:["强相关经历置顶、写满","弱相关内容压成一行或删除","为每个模块分配行数预算","确定经历顺序与标题层级"],
+   output:["简历结构草案","每段经历的篇幅预算","舍弃清单与原因"],
+   kw:["相关性排序","篇幅预算","取舍"]},
+  {n:"04",t:"价值翻译",s:"把「做过什么」改成「有什么用」",
+   sum:"这是最关键的一步：用「动作 + 落地方式 + 量化结果」重写每一条 bullet。",
+   input:["选中的经历事实","JD 的关键词与动作动词"],
+   action:["动作 + 落地方式 + 量化结果（三要素缺一即半成品）","用 JD 语言改写：科研动作 → 岗位动作","能力标签前置，让 HR 三秒抓住重点","去专业化：复杂术语换成可理解的表达"],
+   output:["可直接进简历的 bullet","改写前后对照","量化数字清单"],
+   kw:["动作+结果","岗位语言","结论前置","去专业化"]},
+  {n:"05",t:"套版生成",s:"一份内容源，生成多种格式",
+   sum:"固定 A4 模板，先生成 HTML 母版，再从同一份内容导出其他格式，避免内容漂移。",
+   input:["定稿 bullet 与经历顺序","个人基本信息与证件照"],
+   action:["套用统一 A4 版式","生成 HTML 母版并检查结构","从同一内容源导出 PDF / Word / PNG"],
+   output:["HTML 母版","PDF / Word / PNG","网页版预览"],
+   kw:["统一模板","同源导出","一页 A4"]},
+  {n:"06",t:"渲染校验",s:"页数、密度、一致性三件事",
+   sum:"简历必须真实渲染出来检查：不是写完就算完成。",
+   input:["HTML 母版"],
+   action:["渲染 PDF，确认恰好 1 页","检查底部留白 / 页面密度（10–20mm）","Word 单独渲染，确认也是 1 页","核对三格式内容与数字完全一致"],
+   output:["通过校验的 PDF / Word / PNG","问题清单与修改记录"],
+   kw:["1 页硬约束","密度检查","格式一致"]},
+  {n:"07",t:"交付沉淀",s:"按岗位归档，并更新经历库",
+   sum:"一个岗位一个文件夹，直接可投；同时把新事实回写经历库，下次更快。",
+   input:["校验通过的成品","投递邮件正文需求"],
+   action:["按岗位建立投递文件夹（PDF / Word / PNG / HTML / 邮件）","撰写邮件主题 + 正文 + 平台短消息","更新投递台账与个人经历库"],
+   output:["完整投递包","邮件正文与短消息","更新后的经历库"],
+   kw:["投递包","邮件正文","台账","经历库"]}
+];
+
+const list = document.getElementById("steplist");
+const detail = document.getElementById("detail");
+let active = 0;
+
+function renderList(){
+  list.innerHTML = STEPS.map((s,i)=>`
+    <button class="step${i===active?" active":""}" data-i="${i}">
+      <span class="num">${s.n}</span>
+      <span><span class="tt">${s.t}</span><span class="ss">${s.s}</span></span>
+    </button>`).join("");
+  list.querySelectorAll(".step").forEach(el=>el.addEventListener("click",()=>{active=+el.dataset.i;renderList();renderDetail();}));
+}
+function renderDetail(){
+  const s = STEPS[active];
+  detail.innerHTML = `
+    <div class="dnum">STEP ${s.n}</div>
+    <h3>${s.t}</h3>
+    <p class="dsum">${s.sum}</p>
+    <div class="blocks">
+      <div class="block"><div class="bt">输入</div><ul>${s.input.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      <div class="block"><div class="bt">动作</div><ul>${s.action.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      <div class="block"><div class="bt">输出</div><ul>${s.output.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+    </div>
+    <div class="kw">${s.kw.map(k=>`<span>${k}</span>`).join("")}</div>`;
+}
+renderList(); renderDetail();
+
+const io = new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")})},{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+setTimeout(function(){document.querySelectorAll(".reveal").forEach(function(el){el.classList.add("in")});},900);
+</script>
+</body>
+</html>

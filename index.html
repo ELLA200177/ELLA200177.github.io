@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-hg-theme="light"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>黄佳 · 个人作品集</title>
+<meta name="description" content="黄佳的个人作品集：四个从真实痛点出发、用 AI 编码助手实现并开源/落地的独立项目——中文取词器、文件 AI 整理工具、氨基酸 QTL 数据分析平台、求职工具链。">
+<style>
+  :root {
+    --bg: #f7f9fc;
+    --surface: #ffffff;
+    --surface-2: #eef1f8;
+    --text: #1c2434;
+    --text-2: #5c6b84;
+    --text-3: #8a97ad;
+    --border: #e2e6ef;
+    --border-2: #d3d9e6;
+    --accent: #2e6fb7;
+    --purple: #534ab7;
+    --teal: #0f6e56;
+    --amber: #854f0b;
+    --radius: 14px;
+    --font: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: none; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  /* 顶部导航 */
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(247,249,252,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; padding-bottom: 12px; }
+  nav .logo { font-weight: 500; font-size: 15px; }
+  nav .links { display: flex; gap: 18px; flex-wrap: wrap; }
+  nav .links a { font-size: 14px; color: var(--text-2); }
+  nav .links a:hover { color: var(--accent); }
+
+  header { padding: 72px 0 48px; background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%); }
+  .kicker { display: inline-block; font-size: 12px; letter-spacing: .08em; color: var(--accent); background: #e3edf9; padding: 4px 12px; border-radius: 20px; font-weight: 500; margin-bottom: 22px; }
+  h1 { font-size: 46px; line-height: 1.15; font-weight: 500; letter-spacing: -.02em; }
+  h1 .sub { color: var(--text-2); font-size: 25px; font-weight: 400; }
+  .intro { font-size: 17px; color: var(--text-2); margin-top: 20px; max-width: 680px; }
+  .intro b { color: var(--text); font-weight: 500; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .chip { font-size: 13px; color: var(--text-2); background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; }
+  .chip b { color: var(--text); font-weight: 500; }
+  .hero-actions { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; padding: 12px 22px; border-radius: 10px; border: 1px solid transparent; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { box-shadow: 0 6px 18px rgba(46,111,183,.25); }
+  .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border-2); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .email-inline { font-size: 14px; color: var(--text-2); }
+  .email-inline b { color: var(--text); font-weight: 500; }
+
+  section { padding: 52px 0; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-label { font-size: 12px; letter-spacing: .08em; color: var(--text-3); text-transform: uppercase; margin-bottom: 12px; font-weight: 500; }
+  h2 { font-size: 26px; font-weight: 500; letter-spacing: -.01em; margin-bottom: 8px; }
+  .sec-desc { font-size: 15px; color: var(--text-2); margin-bottom: 28px; max-width: 680px; }
+  .lead { font-size: 16px; color: var(--text-2); max-width: 680px; }
+
+  /* 项目概览卡片（锚点入口） */
+  .project-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  .project { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); transition: transform .15s ease, box-shadow .15s ease; display: block; }
+  .project:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(28,36,52,.10); }
+  .project .p-inner { padding: 26px 30px; }
+  .project .p-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .project .p-title { font-size: 21px; font-weight: 500; letter-spacing: -.01em; }
+  .project .p-role { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+  .project .p-tag { font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+  .tag-purple { color: var(--purple); background: #eeedfe; }
+  .tag-blue { color: var(--accent); background: #e3edf9; }
+  .tag-teal { color: var(--teal); background: #e1f5ee; }
+  .tag-amber { color: var(--amber); background: #faeeda; }
+  .project .p-desc { font-size: 15px; color: var(--text-2); margin-top: 12px; }
+  .project .p-tech { font-size: 13px; color: var(--text-3); margin-top: 10px; font-family: var(--mono); }
+  .project .p-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--accent); margin-top: 14px; }
+  .project .p-link .arr { transition: transform .12s ease; }
+  .project:hover .p-link .arr { transform: translateX(3px); }
+
+  /* 项目详情区块 */
+  .detail-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .detail-head .d-tag { font-size: 12px; font-weight: 500; padding: 3px 12px; border-radius: 20px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 24px 0; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; }
+  .stat .num { font-size: 28px; font-weight: 500; color: var(--accent); line-height: 1.2; }
+  .stat .lbl { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+  .d-purple .stat .num, .d-purple .callout-title { color: var(--purple) !important; }
+  .d-teal .stat .num { color: var(--teal) !important; }
+
+  .pain-table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 14px; }
+  .pain-table th, .pain-table td { padding: 11px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  .pain-table th { font-weight: 500; color: var(--text-2); background: var(--surface-2); font-size: 13px; }
+  .pain-table td:first-child { color: var(--text-2); font-weight: 500; white-space: nowrap; }
+  .pain-table .hi { color: var(--accent); font-weight: 500; }
+
+  .callout { background: #e3edf9; border: 1px solid #c3d8f0; border-radius: var(--radius); padding: 20px; margin-top: 18px; }
+  .callout .callout-title { font-weight: 500; font-size: 15px; margin-bottom: 6px; color: var(--accent); }
+  .callout p { font-size: 14px; color: var(--text-2); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--text-2); }
+  .card.teal { border-top: 3px solid var(--teal); }
+  .card.blue { border-top: 3px solid var(--accent); }
+
+  .module-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+  .module { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .module .m-name { font-weight: 500; font-size: 14px; }
+  .module .m-desc { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+
+  figure { margin: 24px 0; }
+  figure img { width: 100%; border: 1px solid var(--border-2); border-radius: var(--radius); display: block; }
+  figcaption { font-size: 13px; color: var(--text-3); margin-top: 10px; text-align: center; }
+
+  .role-split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+  .role-box { border-radius: var(--radius); padding: 20px; }
+  .role-box.mine { background: #e3edf9; border: 1px solid #c3d8f0; }
+  .role-box.ai { background: var(--surface-2); border: 1px solid var(--border-2); }
+  .role-box h3 { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+  .role-box ul { list-style: none; }
+  .role-box li { font-size: 13px; color: var(--text-2); padding: 3px 0 3px 16px; position: relative; }
+  .role-box li::before { content: ""; position: absolute; left: 0; top: 11px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .role-box.ai li::before { background: var(--text-3); }
+
+  .honest-note { margin-top: 14px; font-size: 13px; color: var(--text-3); padding: 12px 16px; background: #fbf7ee; border: 1px solid #f0e4c8; border-radius: 10px; }
+
+  .back-top { display: inline-block; font-size: 13px; color: var(--text-3); margin-top: 28px; }
+  .back-top:hover { color: var(--accent); }
+
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+  .about-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+  .about-card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .about-card p, .about-card li { font-size: 14px; color: var(--text-2); }
+  .about-card ul { list-style: none; }
+  .about-card li { padding: 3px 0 3px 16px; position: relative; }
+  .about-card li::before { content: ""; position: absolute; left: 0; top: 11px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+  /* 联系区 */
+  .contact-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 20px; }
+  .contact-box .c-name { font-size: 20px; font-weight: 500; }
+  .contact-box .c-row { margin-top: 14px; display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; font-size: 15px; }
+  .contact-box .c-row a, .contact-box .c-row span { color: var(--text-2); }
+  .contact-box .c-row b { color: var(--text); font-weight: 500; }
+  .contact-box .c-hint { font-size: 12px; color: var(--text-3); margin-top: 12px; }
+
+  footer { padding: 44px 0 64px; text-align: center; border-top: 1px solid var(--border); color: var(--text-3); font-size: 13px; }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 32px; }
+    h1 .sub { font-size: 19px; }
+    .grid-2, .role-split, .about-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .module-list { grid-template-columns: 1fr 1fr; }
+    .project .p-top { flex-direction: column; }
+    nav .links { display: none; }
+  }
+</style>
+<style data-hg-injected="ui">
+    :root{
+      --hg-bg:#171b2a; --hg-fg:#f6f7fb; --hg-line:rgba(255,255,255,.12); --hg-hover:rgba(255,255,255,.07);
+      /* v0.8.1:整页 UI 对齐 sidepanel Mint 主色 */
+      --hg-brand:#88e6d1; --hg-brand-hover:#9fefda; --hg-brand-soft:rgba(136,230,209,.16);
+      --hg-cta:#88e6d1; --hg-cta-hover:#9fefda; --on-cta:#10211f;
+      --hg-cta-shadow:0 8px 24px rgba(136,230,209,.28); --hg-shadow:0 14px 34px rgba(0,0,0,.34);
+      --hl:rgba(136,230,209,.22); --hl-flash:rgba(136,230,209,.42);
+      --modal-bg:#10131f; --modal-fg:#f6f7fb; --modal-muted:#8d95aa; --mask:rgba(6,8,14,.82);
+    }
+    :root[data-hg-theme="light"]{
+      --hg-bg:#ffffff; --hg-fg:#181d26; --hg-line:#dddddd; --hg-hover:rgba(24,29,38,.06);
+      --hg-brand:#181d26; --hg-brand-hover:#0d1218; --hg-brand-soft:rgba(24,29,38,.07);
+      --hg-cta:#181d26; --hg-cta-hover:#0d1218; --on-cta:#ffffff; --hg-cta-shadow:0 1px 2px rgba(24,29,38,.18); --hg-shadow:0 8px 24px rgba(24,29,38,.14);
+      --hl:rgba(24,29,38,.10); --hl-flash:rgba(24,29,38,.18);
+      --modal-bg:#ffffff; --modal-fg:#181d26; --modal-muted:#41454d; --mask:rgba(24,29,38,.55);
+    }
+    .hg-hl{ position:fixed; background:var(--hl); pointer-events:none; z-index:2147483646; border-radius:2px; }
+    .hg-hl.flash{ background:var(--hl-flash); }
+    .hg-inspect,.hg-select{ position:fixed; pointer-events:none; z-index:2147483645; border-radius:3px; }
+    .hg-inspect{ background:rgba(136,230,209,.14); border:1px solid rgba(136,230,209,.7); }
+    .hg-select{ background:rgba(136,230,209,.12); border:2px solid var(--hg-brand); }
+    .hg-select.flash{ box-shadow:0 0 0 3px var(--hg-brand); } /* #8: 进入文字编辑时闪烁一圈,提示启动成功 */
+    .hg-tip{ position:fixed; pointer-events:none; z-index:2147483647; transform:translateY(-100%); margin-top:-4px;
+      background:var(--hg-bg); color:var(--hg-fg); border:1px solid var(--hg-line); border-radius:6px;
+      padding:3px 7px; font:11px ui-monospace,SFMono-Regular,Menlo,monospace; box-shadow:var(--hg-shadow); white-space:nowrap; }
+    .hg-drop{ position:fixed; pointer-events:none; z-index:2147483645; height:2px; background:var(--hg-brand); box-shadow:0 0 6px rgba(136,230,209,.8); border-radius:1px; }
+    #hg-toolbar{ position:fixed; z-index:2147483647; display:none; background:var(--hg-bg); color:var(--hg-fg);
+      border:1px solid var(--hg-line); border-radius:9px; padding:4px; gap:1px; align-items:center;
+      box-shadow:var(--hg-shadow); font-size:13px;
+      font-family:"Inter","PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,system-ui,sans-serif; }
+    #hg-toolbar.show{ display:flex; flex-wrap:wrap; max-width:92vw; }
+    #hg-toolbar button{ background:transparent; color:var(--hg-fg); border:0; cursor:pointer; padding:4px 7px; border-radius:6px; font-size:13px; line-height:1; }
+    #hg-toolbar button:hover{ background:var(--hg-hover); }
+    #hg-toolbar button.active{ background:var(--hg-brand-soft); color:var(--hg-brand-hover); }
+    #hg-toolbar button[data-act="comment"]{ background:var(--hg-brand); color:var(--on-cta); }
+    #hg-toolbar button[data-act="comment"]:hover{ background:var(--hg-brand-hover); }
+    #hg-toolbar:not(.editing) .hg-edit-tool{ display:none !important; }
+    #hg-toolbar .hg-sep{ width:1px; height:18px; background:var(--hg-line); margin:0 3px; }
+    #hg-toolbar .hg-haspop{ position:relative; }
+    #hg-toolbar .hg-ul{ display:inline-block; width:11px; height:2px; margin-left:1px; vertical-align:middle; border-radius:1px; }
+    #hg-toolbar .hg-ico{ vertical-align:middle; display:inline-block; }
+    #hg-toolbar .hg-popover{ display:none; position:absolute; top:calc(100% + 6px); left:0; background:var(--hg-bg);
+      border:1px solid var(--hg-line); padding:6px;
+      border-radius:9px; box-shadow:var(--hg-shadow); gap:4px; z-index:1; }
+    #hg-toolbar .hg-popover.show{ display:flex; flex-wrap:wrap; max-width:220px; }
+    #hg-toolbar .hg-popover.hg-popcol{ flex-direction:column; min-width:108px; }
+    /* 页面浮动工具栏的色卡收紧到 12px；固定紧凑宽度，避免靠近右侧选区时溢出视口。 */
+    #hg-toolbar .hg-popover[data-pop="textcolor"],#hg-toolbar .hg-popover[data-pop="highlight"]{ width:142px; max-width:calc(100vw - 20px); box-sizing:border-box; gap:3px; }
+    #hg-toolbar .hg-c{ width:12px; height:12px; border-radius:3px; cursor:pointer; border:1px solid var(--hg-line); }
+    /* v0.9.1:「清除高亮」格红斜杠(与 Side Panel 一致;!important 覆盖 inline background:transparent) */
+    #hg-toolbar .hg-c[data-val="transparent"]{ background:linear-gradient(to top right, transparent 45%, #ef4444 45%, #ef4444 55%, transparent 55%) !important; }
+    #hg-toolbar .hg-item{ background:transparent; color:var(--hg-fg); border:0; text-align:left; padding:5px 8px; border-radius:6px; cursor:pointer; font-size:12px; line-height:1.3; }
+    #hg-toolbar .hg-item:hover{ background:var(--hg-hover); }
+    #hg-toolbar .hg-emoji{ font-size:16px; background:transparent; color:var(--hg-fg); border:0; cursor:pointer; padding:4px 5px; border-radius:6px; line-height:1; }
+    #hg-toolbar .hg-emoji:hover{ background:var(--hg-hover); }
+    #hg-toolbar .hg-item.hg-h1{ font-weight:700; font-size:14px; }
+    #hg-toolbar .hg-item.hg-h2{ font-weight:600; font-size:13px; }
+    #hg-toolbar .hg-item.hg-h3{ font-weight:600; font-size:12px; }
+    /* 字体弹层固定单列，超出高度时纵向滚动，不按分组或列折行。 */
+    /* .hg-popover.show 的 flex-wrap:wrap specificity 更高；这里必须匹配 show 才能禁止折列。 */
+    #hg-toolbar .hg-popover.hg-popfont.show{ max-height:260px; overflow-y:auto; min-width:150px; flex-wrap:nowrap; }
+    #hg-toolbar .hg-popsize{ max-height:280px; overflow-y:auto; flex-wrap:nowrap; }
+    #hg-toolbar .hg-size-custom{ display:flex; align-items:center; gap:5px; margin:4px 2px 1px; padding:6px; border-top:1px solid var(--hg-line); color:var(--hg-muted,#9aa0a6); font-size:11px; }
+    #hg-toolbar .hg-size-input{ width:0; min-width:0; flex:1; height:27px; box-sizing:border-box; padding:0 6px; border:1px solid var(--hg-line); border-radius:5px; background:var(--hg-bg); color:var(--hg-fg); font-size:12px; }
+    #hg-toolbar .hg-size-input:focus{ outline:0; border-color:var(--hg-brand); }
+    /* 编辑确认弹窗(页面级;激活侧边栏时弹一次)。v0.8.1:放大 ~30% + Mint + 加深蒙版 */
+    .hg-modal-mask{ position:fixed; inset:0; background:var(--mask); display:flex; align-items:center; justify-content:center; z-index:2147483647; }
+    .hg-modal{ width:470px; max-width:92vw; background:var(--modal-bg); color:var(--modal-fg); border:1px solid var(--hg-line);
+      border-radius:14px; padding:26px 30px; box-shadow:var(--hg-shadow);
+      font-family:"Inter","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+    .hg-modal-title{ font-size:17px; font-weight:600; color:var(--modal-fg); line-height:1.45; margin-bottom:12px; }
+    .hg-modal-tip{ font-size:13.5px; color:var(--modal-muted); line-height:1.65; margin-bottom:20px; }
+    .hg-modal-acts{ display:flex; gap:10px; justify-content:flex-end; }
+    .hg-modal-acts button{ height:42px; padding:0 20px; border-radius:10px; font-size:13.5px; font-weight:600; cursor:pointer; border:1px solid transparent; font-family:inherit; }
+    .hg-modal-cancel{ background:transparent; color:var(--modal-muted); border-color:var(--hg-line); font-weight:500; }
+    .hg-modal-cancel:hover{ background:var(--hg-hover); }
+    .hg-modal-ok{ background:var(--hg-cta); color:var(--on-cta); box-shadow:var(--hg-cta-shadow); }
+    .hg-modal-ok:hover{ background:var(--hg-cta-hover); }
+    /* v0.9.6 未保存草稿横幅:顶部居中浮条,恢复=主色 / 丢弃=描边 */
+    .hg-draft-banner{ position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:2147483647;
+      display:flex; align-items:center; gap:12px; max-width:92vw; background:var(--hg-bg); color:var(--hg-fg);
+      border:1px solid var(--hg-line); border-radius:10px; padding:10px 14px; box-shadow:var(--hg-shadow);
+      font-size:13px; font-family:"Inter","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+    .hg-draft-banner .hg-draft-msg{ line-height:1.4; }
+    .hg-draft-banner button{ border-radius:7px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; border:1px solid transparent; white-space:nowrap; }
+    .hg-draft-restore{ background:var(--hg-cta); color:var(--on-cta); }
+    .hg-draft-restore:hover{ background:var(--hg-cta-hover); }
+    .hg-draft-discard{ background:transparent; color:var(--hg-fg); border-color:var(--hg-line); }
+    .hg-draft-discard:hover{ background:var(--hg-hover); }
+  </style></head>
+<body contenteditable="true">
+
+<nav>
+  <div class="wrap">
+    <span class="logo">黄佳 · 作品集</span>
+    <div class="links">
+      <a href="#projects">项目</a>
+      <a href="#p1">文件 AI 整理</a>
+      <a href="#p2">拾字</a>
+      <a href="#p3">氨基酸平台</a>
+      <a href="job-workbench.html" target="_blank" rel="noopener">求职工具链</a>
+      <a href="#about">关于</a>
+      <a href="#contact">联系</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <span class="kicker">个人作品集 · Portfolio</span>
+    <h1>黄佳<span class="sub"> 的作品集</span></h1>
+    <p class="intro">四个从<b>真实痛点</b>出发、用 <b>AI 编码助手</b>实现、并<b>独立完成需求定义 · 产品设计 · 验收 · 发布</b>的完整项目，从想法到可用的闭环。</p>
+    <div class="meta">
+      <span class="chip"><b>教育</b> 华中农业大学 · 生物化学与分子生物学硕士（2027 届）</span>
+      <span class="chip"><b>技能</b> Python · R · 数据分析 · 产品设计</span>
+    </div>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#projects">浏览四个项目</a>
+      <a class="btn btn-ghost" href="#contact">联系我</a>
+      <span class="email-inline">或直接写信到 <b>huangjia0177@163.com</b></span>
+    </div>
+  </div>
+</header>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-label">Projects</div>
+    <h2>四个项目</h2>
+    <p class="sec-desc">按「产品感」和「技术深度」双线呈现——每个项目都回答了：解决谁的什么问题、做了什么取舍、落地了什么。点击卡片直达详情。</p>
+
+    <div class="project-grid">
+      <a class="project" href="#p1">
+        <div class="p-inner">
+          <div class="p-top">
+            <div>
+              <div class="p-title">① 文件 AI 整理工具</div>
+              <div class="p-role">产品定义 · 需求验证 · 隐私设计</div>
+            </div>
+            <span class="p-tag tag-blue">产品岗首选</span>
+          </div>
+          <p class="p-desc">让 AI 读懂文件、自动改名、自动归档的桌面工具。桌面不再乱。</p>
+          <p class="p-tech">Python · pywebview · AI API（8+ 服务商 / 本地 Ollama）</p>
+          <span class="p-link">查看详情 <span class="arr">↓</span></span>
+        </div>
+      </a>
+
+      <a class="project" href="#p2">
+        <div class="p-inner">
+          <div class="p-top">
+            <div>
+              <div class="p-title">② 拾字 Shizi · 中文取词器</div>
+              <div class="p-role">产品定义 · 竞品取舍 · 开源发布</div>
+            </div>
+            <span class="p-tag tag-purple">产品 + 技术双修</span>
+          </div>
+          <p class="p-desc">键盘打不出来的字，一个热键调出来。中文输入法下也能自动展开。</p>
+          <p class="p-tech">Rust · Tauri · SQLite（152 词条 · 126 触发码 · 4 套测试）</p>
+          <span class="p-link">查看详情 <span class="arr">↓</span></span>
+        </div>
+      </a>
+
+      <a class="project" href="#p3">
+        <div class="p-inner">
+          <div class="p-top">
+            <div>
+              <div class="p-title">③ 氨基酸 QTL 数据分析平台</div>
+              <div class="p-role">需求定义 · 统计分析 · 平台实现</div>
+            </div>
+            <span class="p-tag tag-teal">真实科研产出</span>
+          </div>
+          <p class="p-desc">把「批次复杂、仪器差异大」的原始表型数据，变成可交互、可复现的分析平台。</p>
+          <p class="p-tech">Python · Streamlit · pandas · SciPy · Plotly + R/qtl</p>
+          <span class="p-link">查看详情 <span class="arr">↓</span></span>
+        </div>
+      </a>
+
+      <a class="project" href="job-workbench.html" target="_blank" rel="noopener">
+        <div class="p-inner">
+          <div class="p-top">
+            <div>
+              <div class="p-title">④ 求职工具链 · JD→简历工作台</div>
+              <div class="p-role">产品设计 · 方法沉淀 · 可交互工具</div>
+            </div>
+            <span class="p-tag tag-amber">求职方法论</span>
+          </div>
+          <p class="p-desc">用 AI 辅助求职、用数据做决策：可交互的「JD→简历」工作台 + 七步方法论说明站。</p>
+          <p class="p-tech">JavaScript · HTML/CSS · Node bridge（中英双语 · 本地运行）</p>
+          <div class="p-highlights">
+            <ul>
+              <li>粘贴 JD 自动解析关键词与硬性要求，匹配经历并加权排序</li>
+              <li>逐条改写润色，右侧实时生成中/英 A4 简历，一键导出 PDF</li>
+              <li>七步流程 + 三条铁律 + 真实案例与改写前后对比</li>
+            </ul>
+          </div>
+          <span class="p-link">打开工具站 <span class="arr">→</span></span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 项目 1：文件 AI 整理工具 ============ -->
+<section id="p1" class="d-blue">
+  <div class="wrap">
+    <div class="detail-head">
+      <div class="sec-label" style="margin-bottom:0;">Project 01</div>
+      <span class="d-tag tag-blue">产品岗首选</span>
+    </div>
+    <h2 style="margin-top:10px;">文件 AI 整理工具</h2>
+    <p class="lead">让 AI 读懂你的文件，自动改名、自动归档。桌面不再乱。</p>
+
+    <div class="stats">
+      <div class="stat"><div class="num">8+</div><div class="lbl">AI 服务商</div></div>
+      <div class="stat"><div class="num">9</div><div class="lbl">文件格式支持</div></div>
+      <div class="stat"><div class="num">3</div><div class="lbl">层分类体系</div></div>
+      <div class="stat"><div class="num">v0.6</div><div class="lbl">原型版本 · MIT</div></div>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:500;margin-top:8px;">从「手动整理启动不了」出发</h3>
+    <table class="pain-table">
+      <thead><tr><th>痛点</th><th>描述</th><th>对应功能</th></tr></thead>
+      <tbody>
+        <tr><td>文件认不出</td><td>分好文件夹，进去还要盯着文件名一个个看</td><td>AI 重命名 + 文件预览</td></tr>
+        <tr><td>漂着的文件堆桌面</td><td>不属于任何项目的文件越堆越多</td><td>自动归档 + 自动新建分类</td></tr>
+        <tr><td>找文件靠翻</td><td>靠回忆一个个文件夹翻，效率低</td><td>自然语言搜索</td></tr>
+        <tr><td>手动整理启动不了</td><td>知道该整理，但太花时间从没开始过</td><td>一键扫描 + 分析 + 归档</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-title">写进 PRD 的成功衡量标准</div>
+      <p>AI 建议准确率 ≥ 80%（用户不用大改就能归档）· 单文件分析 ≤ 3 秒（后台线程不卡界面）· 使用后桌面散落文件下降 ≥ 90%。用可量化指标定义「产品做对了」。</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card blue">
+        <h3>三层分类体系，不让 AI 乱归</h3>
+        <p>现有文件夹 + 用户自定义 + AI 积累分类，三层合并去重后作为候选；AI 新建的分类按文件夹持久化，越用越懂。</p>
+      </div>
+      <div class="card blue">
+        <h3>隐私作为产品功能</h3>
+        <p>同一套接口既支持云端（DeepSeek/Kimi/智谱…），也支持本地 Ollama——整理涉密文件时内容不上传。API Key 只存本机，写盘前统一做文件名清洗与路径穿越防护。</p>
+      </div>
+    </div>
+
+    <div class="role-split">
+      <div class="role-box mine">
+        <h3>我负责的</h3>
+        <ul>
+          <li>需求定义：从「手动整理启动不了」的真实痛点出发</li>
+          <li>产品设计：三层分类、确认+撤销、隐私模式三大决策</li>
+          <li>成功衡量：定下三项可量化指标并写入 PRD</li>
+          <li>开源发布：许可证、README、PRD、Release</li>
+        </ul>
+      </div>
+      <div class="role-box ai">
+        <h3>AI 编码助手做的</h3>
+        <ul>
+          <li>代码实现：Python 后端、pywebview 前端、AI 请求层</li>
+          <li>技术细节：文件解析、后台线程、路径清洗防护</li>
+        </ul>
+      </div>
+    </div>
+    <div class="honest-note">诚实说明：实现由 AI 编码助手辅助完成，本人负责需求、设计、验收与发布。GitHub：<a href="https://github.com/ELLA200177/file-ai-organizer" target="_blank" rel="noopener">ELLA200177/file-ai-organizer</a></div>
+    <a class="back-top" href="#projects">↑ 返回项目列表</a>
+  </div>
+</section>
+
+<!-- ============ 项目 2：拾字 ============ -->
+<section id="p2" class="d-purple">
+  <div class="wrap">
+    <div class="detail-head">
+      <div class="sec-label" style="margin-bottom:0;">Project 02</div>
+      <span class="d-tag tag-purple">产品 + 技术双修</span>
+    </div>
+    <h2 style="margin-top:10px;">拾字 Shizi · 中文取词器</h2>
+    <p class="lead">键盘打不出来的字，一个热键调出来。面向中文写作者的取词器。</p>
+
+    <div class="stats">
+      <div class="stat"><div class="num">152</div><div class="lbl">内置词条</div></div>
+      <div class="stat"><div class="num">126</div><div class="lbl">唯一触发码</div></div>
+      <div class="stat"><div class="num">4</div><div class="lbl">套自动化测试</div></div>
+      <div class="stat"><div class="num">7.7MB</div><div class="lbl">安装包 · MIT</div></div>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:500;margin-top:8px;">为什么要「又做一个」——与 Espanso 的对比</h3>
+    <table class="pain-table">
+      <thead><tr><th>对比项</th><th>拾字（本项目）</th><th>Espanso</th></tr></thead>
+      <tbody>
+        <tr><td>加一个词</td><td class="hi">图形界面点选，自动建议触发码</td><td>打开 YAML 照格式抄，改完重启</td></tr>
+        <tr><td>触发码</td><td class="hi">系统自动建议 + 冲突检测</td><td>用户自己想、自己记</td></tr>
+        <tr><td>中文输入法下</td><td class="hi">物理键码匹配，稳定展开</td><td>展开不稳定</td></tr>
+        <tr><td>内存</td><td>~162 MB（WebView2 底噪 107MB）</td><td>~7.2 MB</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-title">核心取舍：用一点内存，换「零配置」</div>
+      <p>对「不写配置」的目标用户，这个取舍成立。中文输入法下触发码稳定展开（物理键码匹配、不污染输入法状态）是同类工具普遍做不到的。</p>
+    </div>
+
+    <div class="role-split">
+      <div class="role-box mine">
+        <h3>我负责的</h3>
+        <ul>
+          <li>需求定义：热键面板 + 触发码自动展开两条入口</li>
+          <li>交互设计：极简卡片式 + 7 套配色主题</li>
+          <li>词库策划：152 条词条、126 个触发码与冲突处理</li>
+          <li>验收原则：先写可复现测试再改代码</li>
+          <li>开源发布：MIT、README、Release 安装包</li>
+        </ul>
+      </div>
+      <div class="role-box ai">
+        <h3>AI 编码助手做的</h3>
+        <ul>
+          <li>代码实现：Rust / Tauri 端、前端 UI、测试脚本</li>
+          <li>技术细节：低级键盘钩子、剪贴板注入、SQLite</li>
+        </ul>
+      </div>
+    </div>
+    <div class="honest-note">诚实说明：代码由 AI 辅助实现，我负责把它定义成对的产品、并建立测试保证质量。GitHub：<a href="https://github.com/ELLA200177/shizi" target="_blank" rel="noopener">ELLA200177/shizi</a> · 安装包：<a href="https://github.com/ELLA200177/shizi/releases/latest" target="_blank" rel="noopener">Releases</a></div>
+    <a class="back-top" href="#projects">↑ 返回项目列表</a>
+  </div>
+</section>
+
+<!-- ============ 项目 3：氨基酸平台 ============ -->
+<section id="p3" class="d-teal">
+  <div class="wrap">
+    <div class="detail-head">
+      <div class="sec-label" style="margin-bottom:0;">Project 03</div>
+      <span class="d-tag tag-teal">真实科研产出</span>
+    </div>
+    <h2 style="margin-top:10px;">氨基酸 QTL 数据分析平台</h2>
+    <p class="lead">把「批次来源复杂、仪器差异大」的原始表型数据，变成可交互、可复现、可导出的数据分析平台。</p>
+
+    <div class="stats">
+      <div class="stat"><div class="num">3</div><div class="lbl">RIL/DH 群体</div></div>
+      <div class="stat"><div class="num">~1500</div><div class="lbl">样本</div></div>
+      <div class="stat"><div class="num">7</div><div class="lbl">独立检测批次</div></div>
+      <div class="stat"><div class="num">17</div><div class="lbl">种氨基酸</div></div>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:500;margin-top:8px;">六个分析模块，一条流水线</h3>
+    <div class="module-list">
+      <div class="module"><div class="m-name">🧹 去异常值</div><div class="m-desc">批次校正可选，一键生成清洗后数据</div></div>
+      <div class="module"><div class="m-name">📦 表型分布图</div><div class="m-desc">三群体箱线图自动标注中位数</div></div>
+      <div class="module"><div class="m-name">📋 异常批次点图</div><div class="m-desc">定位异常值集中在哪个批次</div></div>
+      <div class="module"><div class="m-name">📈 正态性检验</div><div class="m-desc">为 QTL 模型选择提供依据</div></div>
+      <div class="module"><div class="m-name">🧬 QTL 定位与共定位</div><div class="m-desc">6 氨基酸族 LOD 曲线 + 共定位热点</div></div>
+      <div class="module"><div class="m-name">🧪 含量计算</div><div class="m-desc">17 AA 总和、蛋白含量批量入表</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card teal">
+        <h3>发现 1 · 一因多效主效位点</h3>
+        <p>Chr1:48829319 是 SU 群体氨基酸族的「一因多效」主效位点——同一区段同时影响多个氨基酸含量。</p>
+      </div>
+      <div class="card blue">
+        <h3>发现 2 · 蛋白 QTL 共定位</h3>
+        <p>KX 群体主效蛋白 QTL 区段 qHPCJJ1a 与 5 种人体必需/半必需氨基酸共定位，提示该区段间接调控氨基酸含量。</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">核心设计原则：原始数据永不修改</div>
+      <p>所有清洗只生成「清洗后」副本，一键可恢复；「技术异常」与「统计标记」双判据分离；QTL 核心独立为 pipeline_qtl.py 可独立测试。数据脏在哪，方法就长在哪——每条清洗规则都对应一个真实数据问题。</p>
+    </div>
+
+    <div class="role-split">
+      <div class="role-box mine">
+        <h3>我负责的</h3>
+        <ul>
+          <li>需求定义：从科研痛点出发定义六模块工作台</li>
+          <li>统计方法选型：异常判定三方案、批次校正、双判据</li>
+          <li>交互设计：双栏布局、全局筛选、数据版本切换</li>
+          <li>验收标准：清洗可复现、原始数据零修改</li>
+        </ul>
+      </div>
+      <div class="role-box ai">
+        <h3>AI 编码助手做的</h3>
+        <ul>
+          <li>代码实现：Streamlit 页面、pandas 处理逻辑</li>
+          <li>技术细节：Plotly 交互图、缓存策略、Excel 解析</li>
+        </ul>
+      </div>
+    </div>
+    <div class="honest-note">诚实说明：分析结论的科学性由方法和数据把关，不由代码把关——代码由 AI 辅助实现，我负责方法选型与验收。</div>
+    <a class="back-top" href="#projects">↑ 返回项目列表</a>
+  </div>
+</section>
+
+<!-- ============ 关于我 ============ -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-label">About</div>
+    <h2>关于我</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>我是什么样的人</h3>
+        <p>生物背景出身，但对「把想法做成能用的产品」有执念。擅长从自己的真实痛点出发，用工具和 AI 把重复劳动自动化，再把它做成别人也能用的东西。</p>
+      </div>
+      <div class="about-card">
+        <h3>我在四个项目里反复做的事</h3>
+        <ul>
+          <li>定义问题：想清楚「解决谁的什么痛点」</li>
+          <li>做取舍：写 PRD、定衡量标准、对比竞品</li>
+          <li>交付闭环：需求 → 设计 → 实现 → 验收 → 发布</li>
+          <li>诚实边界：AI 写代码，由我验收</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 联系 ============ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-label">Contact</div>
+    <h2>联系我</h2>
+    <div class="contact-box">
+      <div class="c-name">黄佳</div>
+      <div class="c-row">
+        <span><b>邮箱</b>　huangjia0177@163.com</span>
+        <span><b>电话</b>　17775708130</span>
+        <a href="https://github.com/ELLA200177" target="_blank" rel="noopener"><b>GitHub</b>　github.com/ELLA200177</a>
+      </div>
+      <a class="btn btn-primary" style="margin-top:22px;" href="mailto:huangjia0177@163.com">写邮件给我</a>
+      <div class="c-hint">如果邮件按钮没反应，直接复制上面的邮箱地址发信即可。</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">黄佳 · 个人作品集 · 四个独立项目 · 2026</div>
+</footer>
+
+
+
+<div id="hg-toolbar" class="editing" style="left: 323.724px; top: 317.208px; transform: translate(-50%, -100%);"><button data-act="comment" title="评论">评论</button><span class="hg-sep hg-edit-tool"></span><button data-act="bold" class="hg-edit-tool" title="加粗"><b>B</b></button><button data-act="italic" class="hg-edit-tool" title="斜体"><i>I</i></button><button data-act="underline" class="hg-edit-tool" title="下划线"><u>U</u></button><button data-act="strike" class="hg-edit-tool" title="删除线"><s>S</s></button><span class="hg-sep hg-edit-tool"></span><button data-act="pop-textcolor" class="hg-haspop hg-edit-tool" title="文字颜色"><svg class="hg-ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 20h20v4H2zm3.49-3h2.42l1.27-3.58h5.65L16.09 17h2.42L13.25 3h-2.5zm4.42-5.61l2.03-5.79h.12l2.03 5.79z"></path><rect x="2" y="20" width="20" height="4" fill="#ef4444"></rect></svg></button><div class="hg-popover hg-edit-tool" data-pop="textcolor"><span class="hg-c" data-fmt="color" data-val="#0a0a0a" style="background:#0a0a0a"></span><span class="hg-c" data-fmt="color" data-val="#374151" style="background:#374151"></span><span class="hg-c" data-fmt="color" data-val="#6b7280" style="background:#6b7280"></span><span class="hg-c" data-fmt="color" data-val="#9ca3af" style="background:#9ca3af"></span><span class="hg-c" data-fmt="color" data-val="#ffffff" style="background:#ffffff"></span><span class="hg-c" data-fmt="color" data-val="#ef4444" style="background:#ef4444"></span><span class="hg-c" data-fmt="color" data-val="#f97316" style="background:#f97316"></span><span class="hg-c" data-fmt="color" data-val="#f59e0b" style="background:#f59e0b"></span><span class="hg-c" data-fmt="color" data-val="#10b981" style="background:#10b981"></span><span class="hg-c" data-fmt="color" data-val="#06b6d4" style="background:#06b6d4"></span><span class="hg-c" data-fmt="color" data-val="#3b82f6" style="background:#3b82f6"></span><span class="hg-c" data-fmt="color" data-val="#6366f1" style="background:#6366f1"></span><span class="hg-c" data-fmt="color" data-val="#8b5cf6" style="background:#8b5cf6"></span><span class="hg-c" data-fmt="color" data-val="#ec4899" style="background:#ec4899"></span><span class="hg-c" data-fmt="color" data-val="#88e6d1" style="background:#88e6d1"></span><span class="hg-c" data-fmt="color" data-val="#e11d48" style="background:#e11d48"></span></div><button data-act="pop-highlight" class="hg-haspop hg-edit-tool" title="背景高亮"><svg class="hg-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 11-6 6v3h9l3-3" fill="#fff59d" stroke="#fff59d" stroke-width="2" stroke-linejoin="round"></path><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><div class="hg-popover hg-edit-tool" data-pop="highlight"><span class="hg-c" data-fmt="background" data-val="#fff59d" style="background:#fff59d"></span><span class="hg-c" data-fmt="background" data-val="#ffd54f" style="background:#ffd54f"></span><span class="hg-c" data-fmt="background" data-val="#ffcdd2" style="background:#ffcdd2"></span><span class="hg-c" data-fmt="background" data-val="#f8bbd0" style="background:#f8bbd0"></span><span class="hg-c" data-fmt="background" data-val="#e1bee7" style="background:#e1bee7"></span><span class="hg-c" data-fmt="background" data-val="#c5cae9" style="background:#c5cae9"></span><span class="hg-c" data-fmt="background" data-val="#bbdefb" style="background:#bbdefb"></span><span class="hg-c" data-fmt="background" data-val="#b2dfdb" style="background:#b2dfdb"></span><span class="hg-c" data-fmt="background" data-val="#c8e6c9" style="background:#c8e6c9"></span><span class="hg-c" data-fmt="background" data-val="#dcedc8" style="background:#dcedc8"></span><span class="hg-c" data-fmt="background" data-val="#ffccbc" style="background:#ffccbc"></span><span class="hg-c" data-fmt="background" data-val="#ffe0b2" style="background:#ffe0b2"></span><span class="hg-c" data-fmt="background" data-val="#d7ccc8" style="background:#d7ccc8"></span><span class="hg-c" data-fmt="background" data-val="#e5e7eb" style="background:#e5e7eb"></span><span class="hg-c" data-fmt="background" data-val="#ffffff" style="background:#ffffff"></span><span class="hg-c" data-fmt="background" data-val="transparent" style="background:transparent"></span></div><button data-act="pop-font" class="hg-haspop hg-edit-tool" title="字体">字体</button><div class="hg-popover hg-popcol hg-popfont hg-edit-tool" data-pop="font"><button class="hg-item" data-fmt="fontFamily" data-val="'PingFang SC','Microsoft YaHei',sans-serif" style="font-family:'PingFang SC','Microsoft YaHei',sans-serif">默认黑体</button><button class="hg-item" data-fmt="fontFamily" data-val="'PingFang SC',sans-serif" style="font-family:'PingFang SC',sans-serif">苹方</button><button class="hg-item" data-fmt="fontFamily" data-val="'Microsoft YaHei',sans-serif" style="font-family:'Microsoft YaHei',sans-serif">微软雅黑</button><button class="hg-item" data-fmt="fontFamily" data-val="'Songti SC','SimSun','STSong',serif" style="font-family:'Songti SC','SimSun','STSong',serif">宋体</button><button class="hg-item" data-fmt="fontFamily" data-val="'Kaiti SC','KaiTi','STKaiti',serif" style="font-family:'Kaiti SC','KaiTi','STKaiti',serif">楷体</button><button class="hg-item" data-fmt="fontFamily" data-val="'FangSong','STFangsong',serif" style="font-family:'FangSong','STFangsong',serif">仿宋</button><button class="hg-item" data-fmt="fontFamily" data-val="'Heiti SC','SimHei',sans-serif" style="font-family:'Heiti SC','SimHei',sans-serif">黑体</button><button class="hg-item" data-fmt="fontFamily" data-val="'Source Han Sans SC','Noto Sans SC',sans-serif" style="font-family:'Source Han Sans SC','Noto Sans SC',sans-serif">思源黑体</button><button class="hg-item" data-fmt="fontFamily" data-val="'Source Han Serif SC','Noto Serif SC',serif" style="font-family:'Source Han Serif SC','Noto Serif SC',serif">思源宋体</button><button class="hg-item" data-fmt="fontFamily" data-val="'STXingkai','Libian SC',cursive" style="font-family:'STXingkai','Libian SC',cursive">行楷</button><button class="hg-item" data-fmt="fontFamily" data-val="Arial,sans-serif" style="font-family:Arial,sans-serif">Arial</button><button class="hg-item" data-fmt="fontFamily" data-val="Helvetica,Arial,sans-serif" style="font-family:Helvetica,Arial,sans-serif">Helvetica</button><button class="hg-item" data-fmt="fontFamily" data-val="'Times New Roman',Times,serif" style="font-family:'Times New Roman',Times,serif">Times New Roman</button><button class="hg-item" data-fmt="fontFamily" data-val="Georgia,serif" style="font-family:Georgia,serif">Georgia</button><button class="hg-item" data-fmt="fontFamily" data-val="'Courier New',Courier,monospace" style="font-family:'Courier New',Courier,monospace">Courier New</button><button class="hg-item" data-fmt="fontFamily" data-val="Verdana,sans-serif" style="font-family:Verdana,sans-serif">Verdana</button><button class="hg-item" data-fmt="fontFamily" data-val="Tahoma,sans-serif" style="font-family:Tahoma,sans-serif">Tahoma</button><button class="hg-item" data-fmt="fontFamily" data-val="'Trebuchet MS',sans-serif" style="font-family:'Trebuchet MS',sans-serif">Trebuchet MS</button><button class="hg-item" data-fmt="fontFamily" data-val="'Palatino Linotype',Palatino,serif" style="font-family:'Palatino Linotype',Palatino,serif">Palatino</button><button class="hg-item" data-fmt="fontFamily" data-val="Impact,sans-serif" style="font-family:Impact,sans-serif">Impact</button></div><button data-act="pop-size" class="hg-haspop hg-edit-tool" title="字号">字号</button><div class="hg-popover hg-popcol hg-popsize hg-edit-tool" data-pop="size"><button class="hg-item" data-fmt="fontSize" data-val="10px" style="font-size:10px">10 px</button><button class="hg-item" data-fmt="fontSize" data-val="12px" style="font-size:12px">12 px</button><button class="hg-item" data-fmt="fontSize" data-val="14px" style="font-size:14px">14 px</button><button class="hg-item" data-fmt="fontSize" data-val="16px" style="font-size:16px">16 px</button><button class="hg-item" data-fmt="fontSize" data-val="18px" style="font-size:18px">18 px</button><button class="hg-item" data-fmt="fontSize" data-val="20px" style="font-size:20px">20 px</button><button class="hg-item" data-fmt="fontSize" data-val="24px" style="font-size:24px">24 px</button><button class="hg-item" data-fmt="fontSize" data-val="28px" style="font-size:28px">28 px</button><button class="hg-item" data-fmt="fontSize" data-val="32px" style="font-size:32px">32 px</button><button class="hg-item" data-fmt="fontSize" data-val="36px" style="font-size:36px">36 px</button><button class="hg-item" data-fmt="fontSize" data-val="48px" style="font-size:48px">48 px</button><label class="hg-size-custom"><input class="hg-size-input" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="自定义" aria-label="自定义"><span>px</span></label></div><button data-act="pop-heading" class="hg-haspop hg-edit-tool" title="标题级别">H</button><div class="hg-popover hg-popcol hg-edit-tool" data-pop="heading"><button class="hg-item" data-fmt="heading" data-val="P">正文</button><button class="hg-item hg-h1" data-fmt="heading" data-val="H1">标题 1</button><button class="hg-item hg-h2" data-fmt="heading" data-val="H2">标题 2</button><button class="hg-item hg-h3" data-fmt="heading" data-val="H3">标题 3</button></div><button data-act="pop-align" class="hg-haspop hg-edit-tool" title="对齐">☰</button><div class="hg-popover hg-popcol hg-edit-tool" data-pop="align"><button class="hg-item" data-fmt="align" data-val="left">左对齐</button><button class="hg-item" data-fmt="align" data-val="center">居中</button><button class="hg-item" data-fmt="align" data-val="right">右对齐</button><button class="hg-item" data-fmt="align" data-val="justify">两端对齐</button></div><button data-act="pop-emoji" class="hg-haspop hg-edit-tool" title="插入表情">😊</button><div class="hg-popover hg-edit-tool" data-pop="emoji"><button class="hg-emoji hg-edit-tool" data-emoji="😀">😀</button><button class="hg-emoji hg-edit-tool" data-emoji="😄">😄</button><button class="hg-emoji hg-edit-tool" data-emoji="😁">😁</button><button class="hg-emoji hg-edit-tool" data-emoji="😍">😍</button><button class="hg-emoji hg-edit-tool" data-emoji="😎">😎</button><button class="hg-emoji hg-edit-tool" data-emoji="🤔">🤔</button><button class="hg-emoji hg-edit-tool" data-emoji="👍">👍</button><button class="hg-emoji hg-edit-tool" data-emoji="👌">👌</button><button class="hg-emoji hg-edit-tool" data-emoji="👏">👏</button><button class="hg-emoji hg-edit-tool" data-emoji="🙏">🙏</button><button class="hg-emoji hg-edit-tool" data-emoji="💯">💯</button><button class="hg-emoji hg-edit-tool" data-emoji="✅">✅</button><button class="hg-emoji hg-edit-tool" data-emoji="❌">❌</button><button class="hg-emoji hg-edit-tool" data-emoji="⭐">⭐</button><button class="hg-emoji hg-edit-tool" data-emoji="🔥">🔥</button><button class="hg-emoji hg-edit-tool" data-emoji="💡">💡</button><button class="hg-emoji hg-edit-tool" data-emoji="❤️">❤️</button><button class="hg-emoji hg-edit-tool" data-emoji="🎉">🎉</button><button class="hg-emoji hg-edit-tool" data-emoji="🚀">🚀</button><button class="hg-emoji hg-edit-tool" data-emoji="✨">✨</button><button class="hg-emoji hg-edit-tool" data-emoji="📌">📌</button><button class="hg-emoji hg-edit-tool" data-emoji="📎">📎</button><button class="hg-emoji hg-edit-tool" data-emoji="🔍">🔍</button><button class="hg-emoji hg-edit-tool" data-emoji="🎨">🎨</button><button class="hg-emoji hg-edit-tool" data-emoji="💬">💬</button><button class="hg-emoji hg-edit-tool" data-emoji="⚠️">⚠️</button><button class="hg-emoji hg-edit-tool" data-emoji="❓">❓</button><button class="hg-emoji hg-edit-tool" data-emoji="❗">❗</button><button class="hg-emoji hg-edit-tool" data-emoji="✏️">✏️</button><button class="hg-emoji hg-edit-tool" data-emoji="📝">📝</button><button class="hg-emoji hg-edit-tool" data-emoji="🎯">🎯</button><button class="hg-emoji hg-edit-tool" data-emoji="➕">➕</button></div><span class="hg-sep hg-edit-tool"></span><button data-act="clear" class="hg-edit-tool" title="清除格式" aria-label="清除格式"><svg class="hg-ico" width="16" height="16" viewBox="0 0 1053 1024" fill="currentColor" aria-hidden="true"><path d="M896 533.333333H128v-85.333333c0-17.066667 6.4-34.133333 19.2-44.8 10.666667-12.8 27.733333-19.2 44.8-19.2h640c17.066667 0 34.133333 6.4 44.8 19.2 12.8 12.8 19.2 27.733333 19.2 44.8v85.333333zM170.666667 490.666667h682.666666v-42.666667c0-6.4-2.133333-10.666667-6.4-14.933333s-8.533333-6.4-14.933333-6.4H192c-6.4 0-10.666667 2.133333-14.933333 6.4-4.266667 4.266667-6.4 8.533333-6.4 14.933333v42.666667z"></path><path d="M768 874.666667H256c-17.066667 0-34.133333-6.4-44.8-19.2S192 827.733333 192 810.666667V490.666667h640v320c0 17.066667-6.4 34.133333-19.2 44.8-10.666667 12.8-27.733333 19.2-44.8 19.2zM234.666667 533.333333v277.333334c0 6.4 2.133333 10.666667 6.4 14.933333s8.533333 6.4 14.933333 6.4h512c6.4 0 10.666667-2.133333 14.933333-6.4 4.266667-4.266667 6.4-8.533333 6.4-14.933333V533.333333H234.666667z"></path><path d="M394.666667 654.933333h42.666666v185.6h-42.666666zM586.666667 654.933333h42.666666v185.6h-42.666666z"></path><path d="M576 426.666667h-128V192c0-17.066667 6.4-34.133333 19.2-44.8 23.466667-23.466667 66.133333-23.466667 89.6 0 12.8 10.666667 19.2 27.733333 19.2 44.8v234.666667z m-85.333333-42.666667h42.666666V192c0-6.4-2.133333-10.666667-6.4-14.933333-8.533333-8.533333-21.333333-8.533333-29.866666 0-4.266667 4.266667-6.4 8.533333-6.4 14.933333v192z"></path></svg></button></div></body></html>
