@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="zh-CN" data-hg-theme="light"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>黄佳 · 个人作品集</title>
@@ -161,98 +161,8 @@
     nav .links { display: none; }
   }
 </style>
-<style data-hg-injected="ui">
-    :root{
-      --hg-bg:#171b2a; --hg-fg:#f6f7fb; --hg-line:rgba(255,255,255,.12); --hg-hover:rgba(255,255,255,.07);
-      /* v0.8.1:整页 UI 对齐 sidepanel Mint 主色 */
-      --hg-brand:#88e6d1; --hg-brand-hover:#9fefda; --hg-brand-soft:rgba(136,230,209,.16);
-      --hg-cta:#88e6d1; --hg-cta-hover:#9fefda; --on-cta:#10211f;
-      --hg-cta-shadow:0 8px 24px rgba(136,230,209,.28); --hg-shadow:0 14px 34px rgba(0,0,0,.34);
-      --hl:rgba(136,230,209,.22); --hl-flash:rgba(136,230,209,.42);
-      --modal-bg:#10131f; --modal-fg:#f6f7fb; --modal-muted:#8d95aa; --mask:rgba(6,8,14,.82);
-    }
-    :root[data-hg-theme="light"]{
-      --hg-bg:#ffffff; --hg-fg:#181d26; --hg-line:#dddddd; --hg-hover:rgba(24,29,38,.06);
-      --hg-brand:#181d26; --hg-brand-hover:#0d1218; --hg-brand-soft:rgba(24,29,38,.07);
-      --hg-cta:#181d26; --hg-cta-hover:#0d1218; --on-cta:#ffffff; --hg-cta-shadow:0 1px 2px rgba(24,29,38,.18); --hg-shadow:0 8px 24px rgba(24,29,38,.14);
-      --hl:rgba(24,29,38,.10); --hl-flash:rgba(24,29,38,.18);
-      --modal-bg:#ffffff; --modal-fg:#181d26; --modal-muted:#41454d; --mask:rgba(24,29,38,.55);
-    }
-    .hg-hl{ position:fixed; background:var(--hl); pointer-events:none; z-index:2147483646; border-radius:2px; }
-    .hg-hl.flash{ background:var(--hl-flash); }
-    .hg-inspect,.hg-select{ position:fixed; pointer-events:none; z-index:2147483645; border-radius:3px; }
-    .hg-inspect{ background:rgba(136,230,209,.14); border:1px solid rgba(136,230,209,.7); }
-    .hg-select{ background:rgba(136,230,209,.12); border:2px solid var(--hg-brand); }
-    .hg-select.flash{ box-shadow:0 0 0 3px var(--hg-brand); } /* #8: 进入文字编辑时闪烁一圈,提示启动成功 */
-    .hg-tip{ position:fixed; pointer-events:none; z-index:2147483647; transform:translateY(-100%); margin-top:-4px;
-      background:var(--hg-bg); color:var(--hg-fg); border:1px solid var(--hg-line); border-radius:6px;
-      padding:3px 7px; font:11px ui-monospace,SFMono-Regular,Menlo,monospace; box-shadow:var(--hg-shadow); white-space:nowrap; }
-    .hg-drop{ position:fixed; pointer-events:none; z-index:2147483645; height:2px; background:var(--hg-brand); box-shadow:0 0 6px rgba(136,230,209,.8); border-radius:1px; }
-    #hg-toolbar{ position:fixed; z-index:2147483647; display:none; background:var(--hg-bg); color:var(--hg-fg);
-      border:1px solid var(--hg-line); border-radius:9px; padding:4px; gap:1px; align-items:center;
-      box-shadow:var(--hg-shadow); font-size:13px;
-      font-family:"Inter","PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,system-ui,sans-serif; }
-    #hg-toolbar.show{ display:flex; flex-wrap:wrap; max-width:92vw; }
-    #hg-toolbar button{ background:transparent; color:var(--hg-fg); border:0; cursor:pointer; padding:4px 7px; border-radius:6px; font-size:13px; line-height:1; }
-    #hg-toolbar button:hover{ background:var(--hg-hover); }
-    #hg-toolbar button.active{ background:var(--hg-brand-soft); color:var(--hg-brand-hover); }
-    #hg-toolbar button[data-act="comment"]{ background:var(--hg-brand); color:var(--on-cta); }
-    #hg-toolbar button[data-act="comment"]:hover{ background:var(--hg-brand-hover); }
-    #hg-toolbar:not(.editing) .hg-edit-tool{ display:none !important; }
-    #hg-toolbar .hg-sep{ width:1px; height:18px; background:var(--hg-line); margin:0 3px; }
-    #hg-toolbar .hg-haspop{ position:relative; }
-    #hg-toolbar .hg-ul{ display:inline-block; width:11px; height:2px; margin-left:1px; vertical-align:middle; border-radius:1px; }
-    #hg-toolbar .hg-ico{ vertical-align:middle; display:inline-block; }
-    #hg-toolbar .hg-popover{ display:none; position:absolute; top:calc(100% + 6px); left:0; background:var(--hg-bg);
-      border:1px solid var(--hg-line); padding:6px;
-      border-radius:9px; box-shadow:var(--hg-shadow); gap:4px; z-index:1; }
-    #hg-toolbar .hg-popover.show{ display:flex; flex-wrap:wrap; max-width:220px; }
-    #hg-toolbar .hg-popover.hg-popcol{ flex-direction:column; min-width:108px; }
-    /* 页面浮动工具栏的色卡收紧到 12px；固定紧凑宽度，避免靠近右侧选区时溢出视口。 */
-    #hg-toolbar .hg-popover[data-pop="textcolor"],#hg-toolbar .hg-popover[data-pop="highlight"]{ width:142px; max-width:calc(100vw - 20px); box-sizing:border-box; gap:3px; }
-    #hg-toolbar .hg-c{ width:12px; height:12px; border-radius:3px; cursor:pointer; border:1px solid var(--hg-line); }
-    /* v0.9.1:「清除高亮」格红斜杠(与 Side Panel 一致;!important 覆盖 inline background:transparent) */
-    #hg-toolbar .hg-c[data-val="transparent"]{ background:linear-gradient(to top right, transparent 45%, #ef4444 45%, #ef4444 55%, transparent 55%) !important; }
-    #hg-toolbar .hg-item{ background:transparent; color:var(--hg-fg); border:0; text-align:left; padding:5px 8px; border-radius:6px; cursor:pointer; font-size:12px; line-height:1.3; }
-    #hg-toolbar .hg-item:hover{ background:var(--hg-hover); }
-    #hg-toolbar .hg-emoji{ font-size:16px; background:transparent; color:var(--hg-fg); border:0; cursor:pointer; padding:4px 5px; border-radius:6px; line-height:1; }
-    #hg-toolbar .hg-emoji:hover{ background:var(--hg-hover); }
-    #hg-toolbar .hg-item.hg-h1{ font-weight:700; font-size:14px; }
-    #hg-toolbar .hg-item.hg-h2{ font-weight:600; font-size:13px; }
-    #hg-toolbar .hg-item.hg-h3{ font-weight:600; font-size:12px; }
-    /* 字体弹层固定单列，超出高度时纵向滚动，不按分组或列折行。 */
-    /* .hg-popover.show 的 flex-wrap:wrap specificity 更高；这里必须匹配 show 才能禁止折列。 */
-    #hg-toolbar .hg-popover.hg-popfont.show{ max-height:260px; overflow-y:auto; min-width:150px; flex-wrap:nowrap; }
-    #hg-toolbar .hg-popsize{ max-height:280px; overflow-y:auto; flex-wrap:nowrap; }
-    #hg-toolbar .hg-size-custom{ display:flex; align-items:center; gap:5px; margin:4px 2px 1px; padding:6px; border-top:1px solid var(--hg-line); color:var(--hg-muted,#9aa0a6); font-size:11px; }
-    #hg-toolbar .hg-size-input{ width:0; min-width:0; flex:1; height:27px; box-sizing:border-box; padding:0 6px; border:1px solid var(--hg-line); border-radius:5px; background:var(--hg-bg); color:var(--hg-fg); font-size:12px; }
-    #hg-toolbar .hg-size-input:focus{ outline:0; border-color:var(--hg-brand); }
-    /* 编辑确认弹窗(页面级;激活侧边栏时弹一次)。v0.8.1:放大 ~30% + Mint + 加深蒙版 */
-    .hg-modal-mask{ position:fixed; inset:0; background:var(--mask); display:flex; align-items:center; justify-content:center; z-index:2147483647; }
-    .hg-modal{ width:470px; max-width:92vw; background:var(--modal-bg); color:var(--modal-fg); border:1px solid var(--hg-line);
-      border-radius:14px; padding:26px 30px; box-shadow:var(--hg-shadow);
-      font-family:"Inter","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
-    .hg-modal-title{ font-size:17px; font-weight:600; color:var(--modal-fg); line-height:1.45; margin-bottom:12px; }
-    .hg-modal-tip{ font-size:13.5px; color:var(--modal-muted); line-height:1.65; margin-bottom:20px; }
-    .hg-modal-acts{ display:flex; gap:10px; justify-content:flex-end; }
-    .hg-modal-acts button{ height:42px; padding:0 20px; border-radius:10px; font-size:13.5px; font-weight:600; cursor:pointer; border:1px solid transparent; font-family:inherit; }
-    .hg-modal-cancel{ background:transparent; color:var(--modal-muted); border-color:var(--hg-line); font-weight:500; }
-    .hg-modal-cancel:hover{ background:var(--hg-hover); }
-    .hg-modal-ok{ background:var(--hg-cta); color:var(--on-cta); box-shadow:var(--hg-cta-shadow); }
-    .hg-modal-ok:hover{ background:var(--hg-cta-hover); }
-    /* v0.9.6 未保存草稿横幅:顶部居中浮条,恢复=主色 / 丢弃=描边 */
-    .hg-draft-banner{ position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:2147483647;
-      display:flex; align-items:center; gap:12px; max-width:92vw; background:var(--hg-bg); color:var(--hg-fg);
-      border:1px solid var(--hg-line); border-radius:10px; padding:10px 14px; box-shadow:var(--hg-shadow);
-      font-size:13px; font-family:"Inter","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
-    .hg-draft-banner .hg-draft-msg{ line-height:1.4; }
-    .hg-draft-banner button{ border-radius:7px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; border:1px solid transparent; white-space:nowrap; }
-    .hg-draft-restore{ background:var(--hg-cta); color:var(--on-cta); }
-    .hg-draft-restore:hover{ background:var(--hg-cta-hover); }
-    .hg-draft-discard{ background:transparent; color:var(--hg-fg); border-color:var(--hg-line); }
-    .hg-draft-discard:hover{ background:var(--hg-hover); }
-  </style></head>
-<body contenteditable="true">
+</head>
+<body>
 
 <nav>
   <div class="wrap">
@@ -600,4 +510,4 @@
 
 
 
-<div id="hg-toolbar" class="editing" style="left: 323.724px; top: 317.208px; transform: translate(-50%, -100%);"><button data-act="comment" title="评论">评论</button><span class="hg-sep hg-edit-tool"></span><button data-act="bold" class="hg-edit-tool" title="加粗"><b>B</b></button><button data-act="italic" class="hg-edit-tool" title="斜体"><i>I</i></button><button data-act="underline" class="hg-edit-tool" title="下划线"><u>U</u></button><button data-act="strike" class="hg-edit-tool" title="删除线"><s>S</s></button><span class="hg-sep hg-edit-tool"></span><button data-act="pop-textcolor" class="hg-haspop hg-edit-tool" title="文字颜色"><svg class="hg-ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 20h20v4H2zm3.49-3h2.42l1.27-3.58h5.65L16.09 17h2.42L13.25 3h-2.5zm4.42-5.61l2.03-5.79h.12l2.03 5.79z"></path><rect x="2" y="20" width="20" height="4" fill="#ef4444"></rect></svg></button><div class="hg-popover hg-edit-tool" data-pop="textcolor"><span class="hg-c" data-fmt="color" data-val="#0a0a0a" style="background:#0a0a0a"></span><span class="hg-c" data-fmt="color" data-val="#374151" style="background:#374151"></span><span class="hg-c" data-fmt="color" data-val="#6b7280" style="background:#6b7280"></span><span class="hg-c" data-fmt="color" data-val="#9ca3af" style="background:#9ca3af"></span><span class="hg-c" data-fmt="color" data-val="#ffffff" style="background:#ffffff"></span><span class="hg-c" data-fmt="color" data-val="#ef4444" style="background:#ef4444"></span><span class="hg-c" data-fmt="color" data-val="#f97316" style="background:#f97316"></span><span class="hg-c" data-fmt="color" data-val="#f59e0b" style="background:#f59e0b"></span><span class="hg-c" data-fmt="color" data-val="#10b981" style="background:#10b981"></span><span class="hg-c" data-fmt="color" data-val="#06b6d4" style="background:#06b6d4"></span><span class="hg-c" data-fmt="color" data-val="#3b82f6" style="background:#3b82f6"></span><span class="hg-c" data-fmt="color" data-val="#6366f1" style="background:#6366f1"></span><span class="hg-c" data-fmt="color" data-val="#8b5cf6" style="background:#8b5cf6"></span><span class="hg-c" data-fmt="color" data-val="#ec4899" style="background:#ec4899"></span><span class="hg-c" data-fmt="color" data-val="#88e6d1" style="background:#88e6d1"></span><span class="hg-c" data-fmt="color" data-val="#e11d48" style="background:#e11d48"></span></div><button data-act="pop-highlight" class="hg-haspop hg-edit-tool" title="背景高亮"><svg class="hg-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 11-6 6v3h9l3-3" fill="#fff59d" stroke="#fff59d" stroke-width="2" stroke-linejoin="round"></path><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><div class="hg-popover hg-edit-tool" data-pop="highlight"><span class="hg-c" data-fmt="background" data-val="#fff59d" style="background:#fff59d"></span><span class="hg-c" data-fmt="background" data-val="#ffd54f" style="background:#ffd54f"></span><span class="hg-c" data-fmt="background" data-val="#ffcdd2" style="background:#ffcdd2"></span><span class="hg-c" data-fmt="background" data-val="#f8bbd0" style="background:#f8bbd0"></span><span class="hg-c" data-fmt="background" data-val="#e1bee7" style="background:#e1bee7"></span><span class="hg-c" data-fmt="background" data-val="#c5cae9" style="background:#c5cae9"></span><span class="hg-c" data-fmt="background" data-val="#bbdefb" style="background:#bbdefb"></span><span class="hg-c" data-fmt="background" data-val="#b2dfdb" style="background:#b2dfdb"></span><span class="hg-c" data-fmt="background" data-val="#c8e6c9" style="background:#c8e6c9"></span><span class="hg-c" data-fmt="background" data-val="#dcedc8" style="background:#dcedc8"></span><span class="hg-c" data-fmt="background" data-val="#ffccbc" style="background:#ffccbc"></span><span class="hg-c" data-fmt="background" data-val="#ffe0b2" style="background:#ffe0b2"></span><span class="hg-c" data-fmt="background" data-val="#d7ccc8" style="background:#d7ccc8"></span><span class="hg-c" data-fmt="background" data-val="#e5e7eb" style="background:#e5e7eb"></span><span class="hg-c" data-fmt="background" data-val="#ffffff" style="background:#ffffff"></span><span class="hg-c" data-fmt="background" data-val="transparent" style="background:transparent"></span></div><button data-act="pop-font" class="hg-haspop hg-edit-tool" title="字体">字体</button><div class="hg-popover hg-popcol hg-popfont hg-edit-tool" data-pop="font"><button class="hg-item" data-fmt="fontFamily" data-val="'PingFang SC','Microsoft YaHei',sans-serif" style="font-family:'PingFang SC','Microsoft YaHei',sans-serif">默认黑体</button><button class="hg-item" data-fmt="fontFamily" data-val="'PingFang SC',sans-serif" style="font-family:'PingFang SC',sans-serif">苹方</button><button class="hg-item" data-fmt="fontFamily" data-val="'Microsoft YaHei',sans-serif" style="font-family:'Microsoft YaHei',sans-serif">微软雅黑</button><button class="hg-item" data-fmt="fontFamily" data-val="'Songti SC','SimSun','STSong',serif" style="font-family:'Songti SC','SimSun','STSong',serif">宋体</button><button class="hg-item" data-fmt="fontFamily" data-val="'Kaiti SC','KaiTi','STKaiti',serif" style="font-family:'Kaiti SC','KaiTi','STKaiti',serif">楷体</button><button class="hg-item" data-fmt="fontFamily" data-val="'FangSong','STFangsong',serif" style="font-family:'FangSong','STFangsong',serif">仿宋</button><button class="hg-item" data-fmt="fontFamily" data-val="'Heiti SC','SimHei',sans-serif" style="font-family:'Heiti SC','SimHei',sans-serif">黑体</button><button class="hg-item" data-fmt="fontFamily" data-val="'Source Han Sans SC','Noto Sans SC',sans-serif" style="font-family:'Source Han Sans SC','Noto Sans SC',sans-serif">思源黑体</button><button class="hg-item" data-fmt="fontFamily" data-val="'Source Han Serif SC','Noto Serif SC',serif" style="font-family:'Source Han Serif SC','Noto Serif SC',serif">思源宋体</button><button class="hg-item" data-fmt="fontFamily" data-val="'STXingkai','Libian SC',cursive" style="font-family:'STXingkai','Libian SC',cursive">行楷</button><button class="hg-item" data-fmt="fontFamily" data-val="Arial,sans-serif" style="font-family:Arial,sans-serif">Arial</button><button class="hg-item" data-fmt="fontFamily" data-val="Helvetica,Arial,sans-serif" style="font-family:Helvetica,Arial,sans-serif">Helvetica</button><button class="hg-item" data-fmt="fontFamily" data-val="'Times New Roman',Times,serif" style="font-family:'Times New Roman',Times,serif">Times New Roman</button><button class="hg-item" data-fmt="fontFamily" data-val="Georgia,serif" style="font-family:Georgia,serif">Georgia</button><button class="hg-item" data-fmt="fontFamily" data-val="'Courier New',Courier,monospace" style="font-family:'Courier New',Courier,monospace">Courier New</button><button class="hg-item" data-fmt="fontFamily" data-val="Verdana,sans-serif" style="font-family:Verdana,sans-serif">Verdana</button><button class="hg-item" data-fmt="fontFamily" data-val="Tahoma,sans-serif" style="font-family:Tahoma,sans-serif">Tahoma</button><button class="hg-item" data-fmt="fontFamily" data-val="'Trebuchet MS',sans-serif" style="font-family:'Trebuchet MS',sans-serif">Trebuchet MS</button><button class="hg-item" data-fmt="fontFamily" data-val="'Palatino Linotype',Palatino,serif" style="font-family:'Palatino Linotype',Palatino,serif">Palatino</button><button class="hg-item" data-fmt="fontFamily" data-val="Impact,sans-serif" style="font-family:Impact,sans-serif">Impact</button></div><button data-act="pop-size" class="hg-haspop hg-edit-tool" title="字号">字号</button><div class="hg-popover hg-popcol hg-popsize hg-edit-tool" data-pop="size"><button class="hg-item" data-fmt="fontSize" data-val="10px" style="font-size:10px">10 px</button><button class="hg-item" data-fmt="fontSize" data-val="12px" style="font-size:12px">12 px</button><button class="hg-item" data-fmt="fontSize" data-val="14px" style="font-size:14px">14 px</button><button class="hg-item" data-fmt="fontSize" data-val="16px" style="font-size:16px">16 px</button><button class="hg-item" data-fmt="fontSize" data-val="18px" style="font-size:18px">18 px</button><button class="hg-item" data-fmt="fontSize" data-val="20px" style="font-size:20px">20 px</button><button class="hg-item" data-fmt="fontSize" data-val="24px" style="font-size:24px">24 px</button><button class="hg-item" data-fmt="fontSize" data-val="28px" style="font-size:28px">28 px</button><button class="hg-item" data-fmt="fontSize" data-val="32px" style="font-size:32px">32 px</button><button class="hg-item" data-fmt="fontSize" data-val="36px" style="font-size:36px">36 px</button><button class="hg-item" data-fmt="fontSize" data-val="48px" style="font-size:48px">48 px</button><label class="hg-size-custom"><input class="hg-size-input" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="自定义" aria-label="自定义"><span>px</span></label></div><button data-act="pop-heading" class="hg-haspop hg-edit-tool" title="标题级别">H</button><div class="hg-popover hg-popcol hg-edit-tool" data-pop="heading"><button class="hg-item" data-fmt="heading" data-val="P">正文</button><button class="hg-item hg-h1" data-fmt="heading" data-val="H1">标题 1</button><button class="hg-item hg-h2" data-fmt="heading" data-val="H2">标题 2</button><button class="hg-item hg-h3" data-fmt="heading" data-val="H3">标题 3</button></div><button data-act="pop-align" class="hg-haspop hg-edit-tool" title="对齐">☰</button><div class="hg-popover hg-popcol hg-edit-tool" data-pop="align"><button class="hg-item" data-fmt="align" data-val="left">左对齐</button><button class="hg-item" data-fmt="align" data-val="center">居中</button><button class="hg-item" data-fmt="align" data-val="right">右对齐</button><button class="hg-item" data-fmt="align" data-val="justify">两端对齐</button></div><button data-act="pop-emoji" class="hg-haspop hg-edit-tool" title="插入表情">😊</button><div class="hg-popover hg-edit-tool" data-pop="emoji"><button class="hg-emoji hg-edit-tool" data-emoji="😀">😀</button><button class="hg-emoji hg-edit-tool" data-emoji="😄">😄</button><button class="hg-emoji hg-edit-tool" data-emoji="😁">😁</button><button class="hg-emoji hg-edit-tool" data-emoji="😍">😍</button><button class="hg-emoji hg-edit-tool" data-emoji="😎">😎</button><button class="hg-emoji hg-edit-tool" data-emoji="🤔">🤔</button><button class="hg-emoji hg-edit-tool" data-emoji="👍">👍</button><button class="hg-emoji hg-edit-tool" data-emoji="👌">👌</button><button class="hg-emoji hg-edit-tool" data-emoji="👏">👏</button><button class="hg-emoji hg-edit-tool" data-emoji="🙏">🙏</button><button class="hg-emoji hg-edit-tool" data-emoji="💯">💯</button><button class="hg-emoji hg-edit-tool" data-emoji="✅">✅</button><button class="hg-emoji hg-edit-tool" data-emoji="❌">❌</button><button class="hg-emoji hg-edit-tool" data-emoji="⭐">⭐</button><button class="hg-emoji hg-edit-tool" data-emoji="🔥">🔥</button><button class="hg-emoji hg-edit-tool" data-emoji="💡">💡</button><button class="hg-emoji hg-edit-tool" data-emoji="❤️">❤️</button><button class="hg-emoji hg-edit-tool" data-emoji="🎉">🎉</button><button class="hg-emoji hg-edit-tool" data-emoji="🚀">🚀</button><button class="hg-emoji hg-edit-tool" data-emoji="✨">✨</button><button class="hg-emoji hg-edit-tool" data-emoji="📌">📌</button><button class="hg-emoji hg-edit-tool" data-emoji="📎">📎</button><button class="hg-emoji hg-edit-tool" data-emoji="🔍">🔍</button><button class="hg-emoji hg-edit-tool" data-emoji="🎨">🎨</button><button class="hg-emoji hg-edit-tool" data-emoji="💬">💬</button><button class="hg-emoji hg-edit-tool" data-emoji="⚠️">⚠️</button><button class="hg-emoji hg-edit-tool" data-emoji="❓">❓</button><button class="hg-emoji hg-edit-tool" data-emoji="❗">❗</button><button class="hg-emoji hg-edit-tool" data-emoji="✏️">✏️</button><button class="hg-emoji hg-edit-tool" data-emoji="📝">📝</button><button class="hg-emoji hg-edit-tool" data-emoji="🎯">🎯</button><button class="hg-emoji hg-edit-tool" data-emoji="➕">➕</button></div><span class="hg-sep hg-edit-tool"></span><button data-act="clear" class="hg-edit-tool" title="清除格式" aria-label="清除格式"><svg class="hg-ico" width="16" height="16" viewBox="0 0 1053 1024" fill="currentColor" aria-hidden="true"><path d="M896 533.333333H128v-85.333333c0-17.066667 6.4-34.133333 19.2-44.8 10.666667-12.8 27.733333-19.2 44.8-19.2h640c17.066667 0 34.133333 6.4 44.8 19.2 12.8 12.8 19.2 27.733333 19.2 44.8v85.333333zM170.666667 490.666667h682.666666v-42.666667c0-6.4-2.133333-10.666667-6.4-14.933333s-8.533333-6.4-14.933333-6.4H192c-6.4 0-10.666667 2.133333-14.933333 6.4-4.266667 4.266667-6.4 8.533333-6.4 14.933333v42.666667z"></path><path d="M768 874.666667H256c-17.066667 0-34.133333-6.4-44.8-19.2S192 827.733333 192 810.666667V490.666667h640v320c0 17.066667-6.4 34.133333-19.2 44.8-10.666667 12.8-27.733333 19.2-44.8 19.2zM234.666667 533.333333v277.333334c0 6.4 2.133333 10.666667 6.4 14.933333s8.533333 6.4 14.933333 6.4h512c6.4 0 10.666667-2.133333 14.933333-6.4 4.266667-4.266667 6.4-8.533333 6.4-14.933333V533.333333H234.666667z"></path><path d="M394.666667 654.933333h42.666666v185.6h-42.666666zM586.666667 654.933333h42.666666v185.6h-42.666666z"></path><path d="M576 426.666667h-128V192c0-17.066667 6.4-34.133333 19.2-44.8 23.466667-23.466667 66.133333-23.466667 89.6 0 12.8 10.666667 19.2 27.733333 19.2 44.8v234.666667z m-85.333333-42.666667h42.666666V192c0-6.4-2.133333-10.666667-6.4-14.933333-8.533333-8.533333-21.333333-8.533333-29.866666 0-4.266667 4.266667-6.4 8.533333-6.4 14.933333v192z"></path></svg></button></div></body></html>
+</body></html>
